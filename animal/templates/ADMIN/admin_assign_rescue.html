@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}Assign Rescue Task{% endblock %}
+
+{% block body %}
+<div class="container animate-fade" style="margin-top: 60px;">
+    <div
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; flex-wrap: wrap; gap: 20px;">
+        <div>
+            <h2 style="font-size: clamp(28px, 4vw, 36px); font-weight: 800; margin-bottom: 8px;">Pending Operations</h2>
+            <p style="color: var(--text-secondary);">Coordinate immediate response for reported incidents.</p>
+        </div>
+        <a href="/admin_home/" class="btn btn-outline" style="padding: 12px 24px;">
+            <i class="fas fa-arrow-left"></i> Back to Center
+        </a>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+        {% for report in reports %}
+        <div class="card"
+            style="display: grid; grid-template-columns: 200px 1fr 300px; gap: 40px; align-items: stretch; padding: 24px;">
+            <!-- Report Photo -->
+            <div
+                style="height: 200px; border-radius: 18px; overflow: hidden; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);">
+                {% if report.photo %}
+                <img src="{{ report.photo.url }}"
+                    style="width: 100%; height: 100%; object-fit: cover; transition: 0.5s;"
+                    onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                {% else %}
+                <div
+                    style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); opacity: 0.3;">
+                    <i class="fas fa-paw fa-3x"></i>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Report Details -->
+            <div style="display: flex; flex-direction: column; justify-content: center;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                    <span
+                        style="background: rgba(46, 204, 113, 0.1); color: var(--accent); padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                        {{ report.animal_type }}
+                    </span>
+                    <span style="color: var(--text-secondary); font-size: 13px;">
+                        <i class="far fa-clock"></i> {{ report.reported_at|timesince }} ago
+                    </span>
+                </div>
+                <h3 style="font-size: 22px; margin-bottom: 12px; font-weight: 700;">Incident #{{ report.id }}</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; font-size: 15px;">{{
+                    report.description|truncatewords:30 }}</p>
+                <div
+                    style="display: flex; align-items: center; gap: 10px; color: #e74c3c; font-size: 14px; font-weight: 500; background: rgba(231, 76, 60, 0.05); padding: 10px 16px; border-radius: 12px; width: fit-content;">
+                    <i class="fas fa-location-dot"></i> {{ report.location_text }}
+                </div>
+            </div>
+
+            <!-- Assignment Action -->
+            <div
+                style="border-left: 1px solid var(--border); padding-left: 40px; display: flex; flex-direction: column; justify-content: center;">
+                <label
+                    style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Dispatch
+                    Team</label>
+                <form action="" method="get" onsubmit="return false;">
+                    <div style="position: relative; margin-bottom: 20px;">
+                        <select id="team_select_{{ report.id }}"
+                            style="width: 100%; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 14px; color: #fff; appearance: none; cursor: pointer; font-size: 14px;">
+                            <option value="" style="background: var(--surface);">Select Active Team...</option>
+                            {% for team in teams %}
+                            <option value="{{ team.id }}" style="background: var(--surface);">{{ team.name }} ({{
+                                team.vehicle }})</option>
+                            {% endfor %}
+                        </select>
+                        <i class="fas fa-chevron-down"
+                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none; font-size: 12px; color: var(--text-secondary);"></i>
+                    </div>
+                    <button onclick="assignTeam({{ report.id }})" class="btn btn-primary"
+                        style="width: 100%; height: 50px;">
+                        Deploy Squad
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div
+            style="text-align: center; padding: 100px 20px; background: var(--surface); border-radius: 32px; border: 2px dashed var(--border);">
+            <div
+                style="width: 80px; height: 80px; background: rgba(46, 204, 113, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 32px; margin: 0 auto 24px;">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 12px;">All Clear</h3>
+            <p style="color: var(--text-secondary); font-size: 16px;">There are no pending rescue reports requiring
+                assignment.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function assignTeam(reportId) {
+        const teamId = document.getElementById('team_select_' + reportId).value;
+        if (!teamId) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Team Required',
+                text: 'Please select a rescue team to deploy.',
+                background: '#131520',
+                color: '#fff',
+                confirmButtonColor: '#2ecc71'
+            });
+            return;
+        }
+        window.location.href = `/admin_assign_to_team/?rid=${reportId}&tid=${teamId}`;
+    }
+</script>
+{% endblock %}
+{% endblock %}

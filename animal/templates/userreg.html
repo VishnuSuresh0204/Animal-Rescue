@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block title %}User Registration - RescueSystem{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: calc(100vh - 80px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 600px;
+        background: var(--surface);
+        padding: 40px;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--text-muted);
+    }
+
+    .form-control {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--border);
+        padding: 14px 18px;
+        border-radius: 14px;
+        color: #fff;
+        font-size: 15px;
+        transition: 0.3s;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .col-full {
+        grid-column: 1 / -1;
+    }
+
+    .image-preview {
+        display: none;
+        margin-top: 15px;
+        width: 120px;
+        height: 120px;
+        border-radius: 16px;
+        object-fit: cover;
+        border: 2px solid var(--primary);
+    }
+
+    @media (max-width: 600px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div style="text-align: center; margin-bottom: 32px;">
+            <div
+                style="width: 60px; height: 60px; background: rgba(46, 204, 113, 0.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--primary); font-size: 24px;">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h2>Create Your Account</h2>
+            <p style="color: var(--text-muted);">Join our community to help and adopt</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" id="passwordField" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" name="phone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" name="address" class="form-control" required>
+                </div>
+                <div class="form-group col-full">
+                    <label>Profile Photo (Optional)</label>
+                    <input type="file" name="image" accept="image/*" class="form-control"
+                        onchange="previewImage(event)">
+                    <img id="imagePreview" class="image-preview">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary"
+                style="width: 100%; justify-content: center; padding: 14px; margin-top: 10px;">
+                Create Account
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 14px;">
+            Already have an account? <a href="/login/"
+                style="color: var(--primary); text-decoration: none; font-weight: 600;">Sign In</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            const output = document.getElementById('imagePreview');
+            output.src = reader.result;
+            output.style.display = "block";
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+{% endblock %}

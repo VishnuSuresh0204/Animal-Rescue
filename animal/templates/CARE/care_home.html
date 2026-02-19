@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Care Dashboard{% endblock %}
+
+{% block body %}
+<div class="container animate-fade" style="margin-top: 60px;">
+    <div style="margin-bottom: 60px; text-align: center;">
+        <h1
+            style="font-size: clamp(32px, 5vw, 48px); font-weight: 800; background: linear-gradient(135deg, #fff 0%, #f1c40f 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 16px;">
+            Shelter Management
+        </h1>
+        <p style="color: var(--text-secondary); font-size: 18px; max-width: 600px; margin: 0 auto;">Providing a safe
+            haven and dedicated care for our animal community.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
+        <a href="/care_view_pets/" style="text-decoration: none; color: inherit;">
+            <div class="card">
+                <div class="feature-icon" style="background: rgba(46, 204, 113, 0.05); color: var(--accent);">
+                    <i class="fas fa-paw"></i>
+                </div>
+                <h3>Resident Wellness</h3>
+                <p style="color: var(--text-secondary); line-height: 1.7;">Manage all animals currently sheltered at
+                    your facility and log their daily health and wellness activities.</p>
+                <div
+                    style="margin-top: 24px; color: var(--accent); font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                    Monitor Residents <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+        </a>
+
+        <a href="/care_chat_vet/" style="text-decoration: none; color: inherit;">
+            <div class="card">
+                <div class="feature-icon" style="background: rgba(52, 152, 219, 0.05); color: #3498db;">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3>Clinical Consultation</h3>
+                <p style="color: var(--text-secondary); line-height: 1.7;">Direct communication channel with supervising
+                    veterinarians for medical advice and treatment updates.</p>
+                <div
+                    style="margin-top: 24px; color: #3498db; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                    Start Consultation <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+        </a>
+
+        <div class="card">
+            <div class="feature-icon" style="background: rgba(241, 196, 15, 0.05); color: #f1c40f;">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <h3>Facility Profile</h3>
+            <div style="margin-top: 20px;">
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 8px;">Shelter Name: <strong
+                        style="color: #fff;">{{ user.care_profile.name }}</strong></p>
+                <p style="color: var(--text-secondary); font-size: 14px;">License Auth: <strong style="color: #fff;">{{
+                        user.care_profile.license_number }}</strong></p>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 10px;">Status: <span
+                        style="color: var(--accent); font-weight: 700;">AUTHORIZED CENTER</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% endblock %}

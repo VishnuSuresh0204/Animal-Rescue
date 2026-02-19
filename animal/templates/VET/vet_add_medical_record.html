@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Add Medical Record{% endblock %}
+
+{% block body %}
+<div class="container animate-fade" style="max-width: 800px; margin-top: 60px;">
+    <div class="card" style="padding: 50px; border-radius: 32px; position: relative; overflow: hidden;">
+        <div
+            style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: var(--accent); opacity: 0.03; border-radius: 50%; filter: blur(40px);">
+        </div>
+
+        <div style="text-align: center; margin-bottom: 45px;">
+            <div
+                style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(46, 204, 113, 0.05); color: var(--accent); border-radius: 18px; font-size: 28px; margin-bottom: 20px; border: 1px solid rgba(46, 204, 113, 0.1);">
+                <i class="fas fa-notes-medical"></i>
+            </div>
+            <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px;">Clinical Entry
+            </h2>
+            <p style="color: var(--text-secondary); font-size: 16px;">Document objective findings and clinical
+                progression for <strong>{{ animal.species }}</strong>.</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div style="margin-bottom: 30px;">
+                <label
+                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">DIAGNOSTIC
+                    FINDINGS</label>
+                <textarea name="diagnosis" required rows="4"
+                    placeholder="Enter clinical observations, symptoms, and deduced pathology..."
+                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none; transition: 0.3s;"></textarea>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <label
+                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">TREATMENT
+                    PROTOCOL</label>
+                <textarea name="treatment" required rows="4"
+                    placeholder="Detail the procedures performed and subsequent medical plan..."
+                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none; transition: 0.3s;"></textarea>
+            </div>
+
+            <div style="margin-bottom: 45px;">
+                <label
+                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">POST-OPERATIONAL
+                    STATUS</label>
+                <div style="position: relative;">
+                    <select name="condition" required
+                        style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; appearance: none; cursor: pointer;">
+                        <option value="Critical">Critical (Immediate danger)</option>
+                        <option value="Serious">Serious (Unstable findings)</option>
+                        <option value="Stable" selected>Stable (Normal parameters)</option>
+                        <option value="Recovering">Recovering (Positive progression)</option>
+                        <option value="Healthy">Healthy (Optimal baseline)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <a href="/vet_treatment/?id={{ animal.id }}" class="btn btn-outline"
+                    style="flex: 1; padding: 18px; border-radius: 16px; font-weight: 600;">
+                    Discard
+                </a>
+                <button type="submit" class="btn btn-primary"
+                    style="flex: 2; padding: 18px; border-radius: 16px; font-weight: 700; box-shadow: 0 10px 25px rgba(46, 204, 113, 0.2);">
+                    Commit to History
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    textarea:focus,
+    select:focus {
+        border-color: var(--accent) !important;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1);
+    }
+</style>
+{% endblock %}

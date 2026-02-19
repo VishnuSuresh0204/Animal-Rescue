@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}User Dashboard{% endblock %}
+
+{% block body %}
+<div class="container animate-fade" style="margin-top: 60px;">
+    <div
+        style="margin-bottom: 60px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 30px;">
+        <div>
+            <h1 style="font-size: clamp(32px, 5vw, 48px); font-weight: 800; margin-bottom: 12px;">Welcome back!</h1>
+            <p style="color: var(--text-secondary); font-size: 18px;">How can we help our animal friends today?</p>
+        </div>
+        <a href="/user_report_animal/" class="btn btn-primary" style="padding: 16px 36px; font-size: 16px;">
+            <i class="fas fa-plus"></i> Report a Rescue
+        </a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
+        <a href="/user_report_animal/" style="text-decoration: none; color: inherit;">
+            <div class="card">
+                <div class="feature-icon" style="background: rgba(46, 204, 113, 0.05); color: var(--accent);">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <h3>Emergency Report</h3>
+                <p style="color: var(--text-secondary); line-height: 1.7;">Spotted an animal in distress? Send us the
+                    details and location immediately for urgent rescue.</p>
+                <div
+                    style="margin-top: 24px; color: var(--accent); font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                    Start Report <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+        </a>
+
+        <a href="/user_track_rescue/" style="text-decoration: none; color: inherit;">
+            <div class="card">
+                <div class="feature-icon" style="background: rgba(52, 152, 219, 0.05); color: #3498db;">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <h3>Rescue Tracking</h3>
+                <p style="color: var(--text-secondary); line-height: 1.7;">Monitor the real-time status of animals
+                    you've reported and their treatment progress.</p>
+                <div
+                    style="margin-top: 24px; color: #3498db; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                    Track Now <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+        </a>
+
+        <a href="/user_request_adoption/" style="text-decoration: none; color: inherit;">
+            <div class="card">
+                <div class="feature-icon" style="background: rgba(241, 196, 15, 0.05); color: #f1c40f;">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3>Adopt a Pet</h3>
+                <p style="color: var(--text-secondary); line-height: 1.7;">Give a forever home to a rescued animal.
+                    Browse healthy pets waiting for your love.</p>
+                <div
+                    style="margin-top: 24px; color: #f1c40f; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                    Browse Pets <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+{% endblock %}
+{% endblock %}

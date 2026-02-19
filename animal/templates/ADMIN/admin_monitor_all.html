@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+{% block title %}Live Intelligence{% endblock %}
+
+{% block body %}
+<div class="container animate-fade" style="margin-top: 60px;">
+    <div
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; flex-wrap: wrap; gap: 20px;">
+        <div>
+            <h2 style="font-size: clamp(28px, 4vw, 36px); font-weight: 800; margin-bottom: 8px; letter-spacing: -1px;">
+                System Intelligence</h2>
+            <p style="color: var(--text-secondary);">Real-time telemetry and operational tracking across the rescue
+                network.</p>
+        </div>
+        <a href="/admin_home/" class="btn btn-outline" style="padding: 12px 24px;">
+            <i class="fas fa-arrow-left"></i> Command Center
+        </a>
+    </div>
+
+    <!-- Segmented Control for Tabs -->
+    <div
+        style="background: rgba(255,255,255,0.03); padding: 6px; border-radius: 20px; border: 1px solid var(--border); display: inline-flex; margin-bottom: 40px; gap: 4px;">
+        <button onclick="showTab('reports')" class="tab-btn active" id="btn-reports"
+            style="color: var(--accent); font-size: 14px; font-weight: 700; cursor: pointer; padding: 12px 28px; border-radius: 16px; border: none; background: transparent; transition: 0.3s; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-satellite-dish"></i> Rescue Alerts
+        </button>
+        <button onclick="showTab('animals')" class="tab-btn" id="btn-animals"
+            style="color: var(--text-secondary); font-size: 14px; font-weight: 700; cursor: pointer; padding: 12px 28px; border-radius: 16px; border: none; background: transparent; transition: 0.3s; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-heartbeat"></i> Clinical Status
+        </button>
+        <button onclick="showTab('adoptions')" class="tab-btn" id="btn-adoptions"
+            style="color: var(--text-secondary); font-size: 14px; font-weight: 700; cursor: pointer; padding: 12px 28px; border-radius: 16px; border: none; background: transparent; transition: 0.3s; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-home"></i> Adoption Queue
+        </button>
+    </div>
+
+    <!-- Rescue Reports -->
+    <div id="reports-tab" class="tab-content animate-fade">
+        <div class="card" style="padding: 0; border-radius: 28px; overflow: hidden;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr
+                        style="text-align: left; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border);">
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Identifier</th>
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Source Entity</th>
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Taxonomy</th>
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Assigned Taskforce</th>
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Deployment Status</th>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 14px;">
+                    {% for r in reports %}
+                    <tr style="border-bottom: 1px solid var(--border); transition: 0.2s;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.01)'"
+                        onmouseout="this.style.background='transparent'">
+                        <td style="padding: 20px 30px; font-family: monospace; color: var(--accent); font-weight: 700;">
+                            #{{ r.id|stringformat:"04d" }}</td>
+                        <td style="padding: 20px 30px; font-weight: 600; color: #fff;">{{ r.reported_by.name }}</td>
+                        <td style="padding: 20px 30px; color: var(--text-secondary);">{{ r.animal_type }}</td>
+                        <td style="padding: 20px 30px;">
+                            {% if r.assigned_team %}
+                            <div style="display: flex; align-items: center; gap: 8px; color: #fff; font-weight: 600;">
+                                <div style="width: 8px; height: 8px; border-radius: 50%; background: #3498db;"></div>
+                                {{ r.assigned_team.name }}
+                            </div>
+                            {% else %}
+                            <span style="color: #e74c3c; font-style: italic; font-size: 13px;">Unassigned Agency</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 20px 30px;">
+                            <span
+                                style="background: rgba(255,255,255,0.05); color: #fff; padding: 6px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid var(--border);">
+                                {{ r.status|upper }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5"
+                            style="padding: 100px; text-align: center; color: var(--text-secondary); opacity: 0.5;">
+                            <i class="fas fa-inbox fa-3x" style="margin-bottom: 20px;"></i>
+                            <p>No active rescue alerts in the registry.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Clinical Status -->
+    <div id="animals-tab" class="tab-content animate-fade" style="display: none;">
+        <div class="card" style="padding: 0; border-radius: 28px; overflow: hidden;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr
+                        style="text-align: left; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border);">
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Subject</th>
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Attending Vet</th>
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Deployment Center</th>
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Clinical Vitals</th>
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Flow Status</th>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 14px;">
+                    {% for a in animals %}
+                    <tr style="border-bottom: 1px solid var(--border); transition: 0.2s;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.01)'"
+                        onmouseout="this.style.background='transparent'">
+                        <td style="padding: 20px 30px; font-weight: 700; color: #fff;">{{ a.species }}</td>
+                        <td style="padding: 20px 30px; font-weight: 600; color: var(--text-secondary);">{{
+                            a.assigned_vet.name }}</td>
+                        <td style="padding: 20px 30px; color: var(--text-secondary);">{{ a.care_center.name }}</td>
+                        <td style="padding: 20px 30px;">
+                            <span
+                                style="color: {% if a.condition == 'Healthy' or a.condition == 'Recovering' %}var(--accent){% else %}#e74c3c{% endif %}; font-weight: 700;">
+                                <i class="fas fa-circle" style="font-size: 8px; margin-right: 6px;"></i> {{
+                                a.condition|upper }}
+                            </span>
+                        </td>
+                        <td style="padding: 20px 30px;">
+                            <span
+                                style="background: rgba(46, 204, 113, 0.1); color: var(--accent); padding: 6px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(46, 204, 113, 0.2);">
+                                {{ a.status|upper }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5"
+                            style="padding: 100px; text-align: center; color: var(--text-secondary); opacity: 0.5;">
+                            <i class="fas fa-notes-medical fa-3x" style="margin-bottom: 20px;"></i>
+                            <p>No subjects under clinical supervision.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Adoption Queue -->
+    <div id="adoptions-tab" class="tab-content animate-fade" style="display: none;">
+        <div class="card" style="padding: 0; border-radius: 28px; overflow: hidden;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr
+                        style="text-align: left; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border);">
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Target Subject</th>
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Petitioner</th>
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Request Timestamp</th>
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Decision Status</th>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 14px;">
+                    {% for req in adoptions %}
+                    <tr style="border-bottom: 1px solid var(--border); transition: 0.2s;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.01)'"
+                        onmouseout="this.style.background='transparent'">
+                        <td style="padding: 20px 30px; font-weight: 700; color: #fff;">{{ req.animal.species }}</td>
+                        <td style="padding: 20px 30px; font-weight: 600; color: var(--text-secondary);">{{ req.user.name
+                            }}</td>
+                        <td style="padding: 20px 30px; color: var(--text-secondary); font-family: monospace;">{{
+                            req.requested_at|date:"Y-m-d H:i" }}</td>
+                        <td style="padding: 20px 30px;">
+                            <span
+                                style="background: rgba(241, 196, 15, 0.1); color: #f1c40f; padding: 6px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(241, 196, 15, 0.2);">
+                                {{ req.status|upper }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4"
+                            style="padding: 100px; text-align: center; color: var(--text-secondary); opacity: 0.5;">
+                            <i class="fas fa-hand-holding-heart fa-3x" style="margin-bottom: 20px;"></i>
+                            <p>No petitions in the adoption queue.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => {
+            el.style.display = 'none';
+        });
+        document.querySelectorAll('.tab-btn').forEach(el => {
+            el.style.color = 'var(--text-secondary)';
+            el.style.background = 'transparent';
+            el.classList.remove('active');
+        });
+
+        const activeContent = document.getElementById(tabId + '-tab');
+        activeContent.style.display = 'block';
+
+        const activeBtn = document.getElementById('btn-' + tabId);
+        activeBtn.style.color = 'var(--accent)';
+        activeBtn.style.background = 'rgba(46, 204, 113, 0.1)';
+        activeBtn.classList.add('active');
+    }
+</script>
+
+<style>
+    .tab-btn:hover {
+        color: #fff !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .tab-btn.active:hover {
+        color: var(--accent) !important;
+        background: rgba(46, 204, 113, 0.15) !important;
+    }
+
+    tr:last-child {
+        border-bottom: none !important;
+    }
+</style>
+{% endblock %}

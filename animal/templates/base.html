@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}RescueSystem{% endblock %}</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #030308;
+            --surface: #0a0a12;
+            --accent: #00f2fe;
+            --accent-secondary: #4facfe;
+            --accent-green: #2ecc71;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(10, 10, 18, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            --font-main: 'Outfit', sans-serif;
+            --glow: 0 0 20px rgba(0, 242, 254, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin: 0;
+            padding-top: 80px;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Animated Mesh Gradient Background */
+        .mesh-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: var(--bg);
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .mesh-gradient div {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: move 20s infinite alternate;
+        }
+
+        .mesh-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--accent);
+            top: -10%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+
+        .mesh-2 {
+            width: 500px;
+            height: 500px;
+            background: #9b59b6;
+            top: 40%;
+            right: -10%;
+            animation-delay: -5s;
+        }
+
+        .mesh-3 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent-green);
+            bottom: -10%;
+            left: 30%;
+            animation-delay: -10s;
+        }
+
+        @keyframes move {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(100px, 100px) scale(1.2);
+            }
+        }
+
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent), var(--accent-secondary));
+            z-index: 1100;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        /* Header / Navbar Refinement */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            padding: 0 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 26px;
+            color: #fff;
+            letter-spacing: -1px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 22px;
+            box-shadow: 0 8px 15px rgba(0, 242, 254, 0.3);
+            transform: rotate(-3deg);
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .logo:hover .logo-icon {
+            transform: rotate(0deg) scale(1.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: var(--accent);
+            transition: 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Buttons Optimization */
+        .btn {
+            padding: 14px 30px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            border: none;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+            color: #000;
+            box-shadow: 0 10px 20px rgba(0, 242, 254, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0, 242, 254, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        /* Card System */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 32px;
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 28px;
+            transition: 0.3s;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade {
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 100px 0 60px;
+            background: var(--surface);
+            border-top: 1px solid var(--glass-border);
+            margin-top: 150px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 60px;
+            margin-bottom: 80px;
+        }
+
+        .footer-col h4 {
+            margin-bottom: 30px;
+            font-size: 18px;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .footer-col h4::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 16px;
+        }
+
+        .footer-col ul li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: 0.3s ease;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--accent);
+            transform: translateX(5px);
+            display: inline-block;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 50px;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .header {
+                padding: 0 20px;
+            }
+
+            .container {
+                padding: 0 20px;
+            }
+
+            .footer-grid {
+                gap: 40px;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="mesh-gradient">
+    <div class="mesh-1"></div>
+    <div class="mesh-2"></div>
+    <div class="mesh-3"></div>
+</div>
+
+<header class="header">
+    <a href="/" class="logo">
+        <div class="logo-icon">🐾</div>
+        RescueSystem
+    </a>
+
+    <nav class="nav-links">
+        <a href="/">Home</a>
+        {% if not request.session.role %}
+        <a href="/user_reg/">User</a>
+        <a href="/vet_reg/">Veterinarian</a>
+        <a href="/rescue_reg/">Rescue Team</a>
+        {% endif %}
+
+        {% if request.session.role == 'admin' %}
+        <a href="/admin_home/" style="color: var(--accent);">Dashboard</a>
+        {% elif request.session.role == 'user' %}
+        <a href="/user_home/" style="color: var(--accent);">Dashboard</a>
+        {% elif request.session.role == 'rescueTeam' %}
+        <a href="/rescue_home/" style="color: var(--accent);">Dashboard</a>
+        {% elif request.session.role == 'vet' %}
+        <a href="/vet_home/" style="color: var(--accent);">Dashboard</a>
+        {% elif request.session.role == 'careCenter' %}
+        <a href="/care_home/" style="color: var(--accent);">Dashboard</a>
+        {% endif %}
+
+        <a href="/login/">Login</a>
+    </nav>
+
+    <div style="display: flex; gap: 12px;">
+        {% if request.session.login_id %}
+        <a href="/logout/" class="btn btn-outline">Logout</a>
+        {% else %}
+        <a href="/login/" class="btn btn-primary">Sign In</a>
+        {% endif %}
+    </div>
+</header>
+
+{% if messages %}
+<div class="container" style="margin-top: 20px;">
+    {% for message in messages %}
+    <div
+        style="padding: 15px 20px; border-radius: 12px; background: rgba(46, 204, 113, 0.1); border: 1px solid var(--accent); color: var(--accent); margin-bottom: 15px;">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<main>
+    {% block body %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-col">
+            <a href="/" class="logo" style="margin-bottom: 20px;">
+                <div class="logo-icon">🐾</div>
+                RescueSystem
+            </a>
+            <p style="color: var(--text-secondary);">Saving lives, one paw at a time. Join our community of animal
+                lovers and rescuers.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Register</h4>
+            <ul>
+                <li><a href="/user_reg/">Animal Lover</a></li>
+                <li><a href="/vet_reg/">Veterinarian</a></li>
+                <li><a href="/rescue_reg/">Rescue Team</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Company</h4>
+            <ul>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Donate</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; {% now "Y" %} Stray Animal Rescue System. All rights reserved.</p>
+    </div>
+</footer>
+
+<!-- SweetAlert2 for premium notifications -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    window.onscroll = function () {
+        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        let scrolled = (winScroll / height) * 100;
+        document.getElementById("scrollProgress").style.width = scrolled + "%";
+    };
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+
+</html>

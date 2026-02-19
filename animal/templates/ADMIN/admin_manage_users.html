@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% block title %}Manage Users{% endblock %}
+
+{% block body %}
+<div class="container animate-fade" style="margin-top: 60px;">
+    <div
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; flex-wrap: wrap; gap: 20px;">
+        <div>
+            <h2 style="font-size: clamp(28px, 4vw, 36px); font-weight: 800; margin-bottom: 8px;">Network Participants
+            </h2>
+            <p style="color: var(--text-secondary);">Oversee rescue teams, practitioners, and their operational status.
+            </p>
+        </div>
+        <a href="/admin_home/" class="btn btn-outline" style="padding: 12px 24px;">
+            <i class="fas fa-arrow-left"></i> Command Center
+        </a>
+    </div>
+
+    <!-- Rescue Teams Section -->
+    <div class="card" style="margin-bottom: 40px; padding: 40px;">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px;">
+            <div class="feature-icon"
+                style="background: rgba(52, 152, 219, 0.05); color: #3498db; margin-bottom: 0; width: 48px; height: 48px; border-radius: 12px; font-size: 20px;">
+                <i class="fas fa-ambulance"></i>
+            </div>
+            <h3 style="font-size: 22px; font-weight: 700;">Rescue Squads</h3>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: separate; border-spacing: 0 12px; text-align: left;">
+                <thead>
+                    <tr>
+                        <th
+                            style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                            Squad Identity</th>
+                        <th
+                            style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                            Contact Vector</th>
+                        <th
+                            style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                            Operational Status</th>
+                        <th
+                            style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                            Protocols</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team in teams %}
+                    <tr style="background: rgba(255,255,255,0.02); transition: 0.3s;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.04)'"
+                        onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+                        <td style="padding: 20px; border-radius: 14px 0 0 14px; font-weight: 600;">{{ team.name }}</td>
+                        <td style="padding: 20px;">
+                            <div style="color: #fff; font-size: 14px;">{{ team.email }}</div>
+                            <div style="color: var(--text-secondary); font-size: 13px;">{{ team.phone }}</div>
+                        </td>
+                        <td style="padding: 20px;">
+                            {% if team.status == 'Approved' %}
+                            <span
+                                style="background: rgba(46, 204, 113, 0.1); color: var(--accent); padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(46, 204, 113, 0.2);">OPERATIONAL</span>
+                            {% elif team.status == 'Pending' %}
+                            <span
+                                style="background: rgba(241, 196, 15, 0.1); color: #f1c40f; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(241, 196, 15, 0.2);">VERIFYING</span>
+                            {% else %}
+                            <span
+                                style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(231, 76, 60, 0.2);">{{
+                                team.status|upper }}</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 20px; border-radius: 0 14px 14px 0;">
+                            <div style="display: flex; gap: 8px;">
+                                {% if team.status == 'Pending' %}
+                                <a href="/admin_approve_team/?id={{ team.id }}" class="btn btn-primary"
+                                    style="padding: 8px 16px; font-size: 12px; border-radius: 10px;">Authorize</a>
+                                <a href="/admin_reject_team/?id={{ team.id }}" class="btn btn-outline"
+                                    style="padding: 8px 16px; font-size: 12px; border-radius: 10px; color: #e74c3c;">Deny</a>
+                                {% endif %}
+                                <a href="/admin_block_user/?id={{ team.user.id }}" class="btn btn-outline"
+                                    style="padding: 8px 16px; font-size: 12px; border-radius: 10px;">Deactivate</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Veterinarians Section -->
+    <div class="card" style="padding: 40px;">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px;">
+            <div class="feature-icon"
+                style="background: rgba(46, 204, 113, 0.05); color: var(--accent); margin-bottom: 0; width: 48px; height: 48px; border-radius: 12px; font-size: 20px;">
+                <i class="fas fa-stethoscope"></i>
+            </div>
+            <h3 style="font-size: 22px; font-weight: 700;">Certified Practitioners</h3>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: separate; border-spacing: 0 12px; text-align: left;">
+                <thead>
+                    <tr>
+                        <th
+                            style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                            Practitioner</th>
+                        <th
+                            style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                            Credentials</th>
+                        <th
+                            style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                            Access Status</th>
+                        <th
+                            style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                            Protocols</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vet in vets %}
+                    <tr style="background: rgba(255,255,255,0.02); transition: 0.3s;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.04)'"
+                        onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+                        <td style="padding: 20px; border-radius: 14px 0 0 14px; font-weight: 600;">{{ vet.name }}</td>
+                        <td style="padding: 20px;">
+                            <div style="color: #fff; font-size: 14px;">{{ vet.qualification }}</div>
+                            <div style="color: var(--text-secondary); font-size: 13px;">{{ vet.experience }} yrs
+                                experience</div>
+                        </td>
+                        <td style="padding: 20px;">
+                            {% if vet.status == 'Approved' %}
+                            <span
+                                style="background: rgba(46, 204, 113, 0.1); color: var(--accent); padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(46, 204, 113, 0.2);">AUTHORIZED</span>
+                            {% elif vet.status == 'Pending' %}
+                            <span
+                                style="background: rgba(241, 196, 15, 0.1); color: #f1c40f; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(241, 196, 15, 0.2);">VERIFYING</span>
+                            {% else %}
+                            <span
+                                style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(231, 76, 60, 0.2);">{{
+                                vet.status|upper }}</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 20px; border-radius: 0 14px 14px 0;">
+                            <div style="display: flex; gap: 8px;">
+                                {% if vet.status == 'Pending' %}
+                                <a href="/admin_approve_team/?id={{ vet.id }}" class="btn btn-primary"
+                                    style="padding: 8px 16px; font-size: 12px; border-radius: 10px;">Authorize</a>
+                                {% endif %}
+                                <a href="/admin_block_user/?id={{ vet.user.id }}" class="btn btn-outline"
+                                    style="padding: 8px 16px; font-size: 12px; border-radius: 10px;">Deactivate</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% endblock %}

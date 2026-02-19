@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Rescue Team Dashboard{% endblock %}
+
+{% block body %}
+<div class="container animate-fade" style="margin-top: 60px;">
+    <div style="margin-bottom: 60px; text-align: center;">
+        <h1
+            style="font-size: clamp(32px, 5vw, 48px); font-weight: 800; background: linear-gradient(135deg, #fff 0%, #3498db 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 16px;">
+            Rescue Command
+        </h1>
+        <p style="color: var(--text-secondary); font-size: 18px; max-width: 600px; margin: 0 auto;">Saving lives, one
+            mission at a time. View active missions and manage response. </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
+        <a href="/rescue_view_alerts/" style="text-decoration: none; color: inherit;">
+            <div class="card">
+                <div class="feature-icon" style="background: rgba(52, 152, 219, 0.05); color: #3498db;">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h3>Rescue Alerts</h3>
+                <p style="color: var(--text-secondary); line-height: 1.7;">View and respond to urgent rescue missions
+                    assigned to your specialized team.</p>
+                <div
+                    style="margin-top: 24px; color: #3498db; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                    View Alerts <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+        </a>
+
+        <div class="card">
+            <div class="feature-icon" style="background: rgba(46, 204, 113, 0.05); color: var(--accent);">
+                <i class="fas fa-check-double"></i>
+            </div>
+            <h3>Deployment Status</h3>
+            <div style="margin-top: 20px;">
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 8px;">Primary Vehicle: <strong
+                        style="color: #fff;">{{ user.rescue_profile.vehicle }}</strong></p>
+                <p style="color: var(--text-secondary); font-size: 14px;">Operational State: <span
+                        style="color: var(--accent); font-weight: 700;">ACTIVE & READY</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

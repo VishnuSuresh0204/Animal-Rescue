@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %}Sign In - RescueSystem{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: calc(100vh - 80px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 450px;
+        background: var(--surface);
+        padding: 40px;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .auth-header h2 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .auth-header p {
+        color: var(--text-muted);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--text-muted);
+    }
+
+    .form-control {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--border);
+        padding: 14px 18px;
+        border-radius: 14px;
+        color: #fff;
+        font-size: 15px;
+        transition: 0.3s;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: #22223a;
+    }
+
+    .btn-auth {
+        width: 100%;
+        padding: 14px;
+        margin-top: 10px;
+        justify-content: center;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 24px;
+        color: var(--text-muted);
+        font-size: 14px;
+    }
+
+    .auth-footer a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>Welcome Back</h2>
+            <p>Enter your details to sign in</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" class="form-control" placeholder="Enter username" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-auth">
+                Sign In
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Don't have an animal lover account? <a href="/user_reg/">Register here</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

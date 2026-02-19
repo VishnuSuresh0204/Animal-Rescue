@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}Chat with Vet{% endblock %}
+
+{% block body %}
+<div class="container animate-fade" style="margin-top: 60px;">
+    <div
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; flex-wrap: wrap; gap: 20px;">
+        <div>
+            <h2 style="font-size: clamp(28px, 4vw, 36px); font-weight: 800; margin-bottom: 8px;">Clinical Consultation
+            </h2>
+            <p style="color: var(--text-secondary);">Direct messaging channel for veterinary guidance and emergency
+                consults.</p>
+        </div>
+        <a href="/care_home/" class="btn btn-outline" style="padding: 12px 24px;">
+            <i class="fas fa-arrow-left"></i> Home Dashboard
+        </a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 320px 1fr; gap: 40px; height: 700px;">
+        <!-- Vet List Sidebar -->
+        <div class="card"
+            style="padding: 0; overflow: hidden; display: flex; flex-direction: column; border-radius: 28px;">
+            <div style="padding: 25px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border);">
+                <h4
+                    style="font-size: 14px; font-weight: 800; letter-spacing: 1px; color: var(--text-secondary); text-transform: uppercase;">
+                    Medical Practitioners</h4>
+            </div>
+            <div style="flex: 1; overflow-y: auto; padding: 15px;" class="custom-scrollbar">
+                {% for v in vets %}
+                <div class="vet-item"
+                    style="padding: 18px; border-radius: 18px; margin-bottom: 12px; cursor: pointer; background: rgba(255,255,255,0.02); transition: 0.3s;"
+                    onclick="document.getElementById('vet_id_input').value='{{ v.id }}'; document.getElementById('chat-header-name').innerText='{{ v.name }}'; document.getElementById('chat-header-sub').innerText='{{ v.qualification }}'; selectVet(this);">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div
+                            style="width: 44px; height: 44px; background: rgba(46, 204, 113, 0.1); color: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; border: 1px solid rgba(46, 204, 113, 0.2);">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div>
+                            <p style="margin: 0; font-weight: 700; color: #fff; font-size: 15px;">{{ v.name }}</p>
+                            <small style="color: var(--text-secondary); font-size: 12px;">{{ v.qualification }}</small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="card"
+            style="padding: 0; overflow: hidden; display: flex; flex-direction: column; border-radius: 32px;">
+            <!-- Chat Header -->
+            <div
+                style="padding: 25px 35px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 20px;">
+                <div id="active-indicator"
+                    style="width: 10px; height: 10px; border-radius: 50%; background: var(--text-secondary); box-shadow: 0 0 10px currentColor;">
+                </div>
+                <div>
+                    <h4 id="chat-header-name" style="margin: 0; font-size: 18px; font-weight: 700;">Initiate
+                        Consultation</h4>
+                    <p id="chat-header-sub" style="margin: 0; font-size: 13px; color: var(--text-secondary);">Select a
+                        practitioner from the registry</p>
+                </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="messages-window" style="flex: 1; padding: 40px; overflow-y: auto; background: rgba(0,0,0,0.2);"
+                class="custom-scrollbar">
+                <div
+                    style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-secondary); opacity: 0.4; text-align: center;">
+                    <i class="fas fa-comments fa-3x" style="margin-bottom: 25px;"></i>
+                    <h3 style="font-size: 20px; font-weight: 600;">Secure Communication Channel</h3>
+                    <p style="max-width: 380px; font-size: 14px; margin-top: 10px; line-height: 1.6;">End-to-end
+                        encrypted link for clinical coordination. Select a veterinarian to viewing historical logs and
+                        send new messages.</p>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div style="padding: 30px 40px; background: rgba(255,255,255,0.02); border-top: 1px solid var(--border);">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="vet_id" id="vet_id_input" required>
+                    <div style="display: flex; gap: 15px;">
+                        <input type="text" name="message" required placeholder="Type clinical observation or inquiry..."
+                            style="flex: 1; padding: 18px 25px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 20px; color: #fff; font-size: 15px; outline: none; transition: 0.3s;"
+                            onfocus="this.style.borderColor='var(--accent)'"
+                            onblur="this.style.borderColor='var(--border)'">
+                        <button type="submit" class="btn btn-primary"
+                            style="width: 64px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; padding: 0;">
+                            <i class="fas fa-paper-plane" style="font-size: 20px;"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .vet-item:hover {
+        transform: translateX(5px);
+    }
+
+    .vet-item.active {
+        background: rgba(46, 204, 113, 0.1) !important;
+        border-color: rgba(46, 204, 113, 0.3) !important;
+    }
+</style>
+
+<script>
+    function selectVet(element) {
+        document.querySelectorAll('.vet-item').forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+        document.getElementById('active-indicator').style.background = 'var(--accent)';
+        document.getElementById('active-indicator').style.color = 'var(--accent)';
+    }
+</script>
+{% endblock %}

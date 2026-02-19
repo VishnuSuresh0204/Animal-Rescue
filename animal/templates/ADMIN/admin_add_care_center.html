@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}Establish Facility{% endblock %}
+
+{% block body %}
+<div class="container animate-fade" style="max-width: 800px; margin-top: 60px;">
+    <div style="margin-bottom: 45px; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+            <h2 style="font-size: 36px; font-weight: 800; margin-bottom: 8px; letter-spacing: -1px;">Establish Facility
+            </h2>
+            <p style="color: var(--text-secondary);">Provision a new Care Center node within the rescue network.</p>
+        </div>
+        <a href="/admin_manage_care_centers/" class="btn btn-outline" style="padding: 12px 24px;">
+            <i class="fas fa-arrow-left"></i> Registry
+        </a>
+    </div>
+
+    <form action="" method="post" enctype="multipart/form-data" class="card"
+        style="padding: 50px; border-radius: 32px; position: relative; overflow: hidden;">
+        <div
+            style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: var(--accent); opacity: 0.03; border-radius: 50%; filter: blur(40px);">
+        </div>
+
+        {% csrf_token %}
+
+        <div style="margin-bottom: 35px;">
+            <label
+                style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 13px; letter-spacing: 0.5px;">INSTITUTIONAL
+                IDENTITY</label>
+            <input type="text" name="name" required placeholder="Official Facility Name..."
+                style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 35px;">
+            <div>
+                <label
+                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 13px; letter-spacing: 0.5px;">SYSTEM
+                    USERNAME</label>
+                <input type="text" name="username" required placeholder="unique_node_id"
+                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
+            </div>
+            <div>
+                <label
+                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 13px; letter-spacing: 0.5px;">PROTECTION
+                    KEY</label>
+                <input type="password" name="password" required placeholder="••••••••"
+                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 35px;">
+            <div>
+                <label
+                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 13px; letter-spacing: 0.5px;">CONTACT
+                    CHANNEL (EMAIL)</label>
+                <input type="email" name="email" required placeholder="admin@facility.org"
+                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
+            </div>
+            <div>
+                <label
+                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 13px; letter-spacing: 0.5px;">TELEMETRY
+                    (PHONE)</label>
+                <input type="text" name="phone" required placeholder="+1 (555) 000-0000"
+                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
+            </div>
+        </div>
+
+        <div style="margin-bottom: 35px;">
+            <label
+                style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 13px; letter-spacing: 0.5px;">REGULATORY
+                CREDENTIALS (LICENSE)</label>
+            <input type="text" name="license" required placeholder="Federal / State License ID..."
+                style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
+        </div>
+
+        <div style="margin-bottom: 35px;">
+            <label
+                style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 13px; letter-spacing: 0.5px;">GEOSPATIAL
+                COORDINATES</label>
+            <textarea name="address" required placeholder="Full physical deployment address..."
+                style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; height: 120px; resize: none;"></textarea>
+        </div>
+
+        <div style="margin-bottom: 45px;">
+            <label
+                style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 13px; letter-spacing: 0.5px;">FACILITY
+                BRANDING</label>
+            <div style="position: relative; border: 2px dashed var(--border); border-radius: 20px; padding: 30px; text-align: center; transition: 0.3s;"
+                id="drop-zone">
+                <input type="file" name="image" id="file-input"
+                    style="position: absolute; inset: 0; opacity: 0; cursor: pointer;">
+                <div style="color: var(--text-secondary);">
+                    <i class="fas fa-cloud-upload-alt fa-2x" style="margin-bottom: 10px;"></i>
+                    <p id="file-label" style="margin: 0; font-size: 14px;">Drag facility logo or click to select</p>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary"
+            style="width: 100%; padding: 20px; border-radius: 18px; font-weight: 800; font-size: 16px; letter-spacing: 0.5px; box-shadow: 0 15px 35px rgba(46, 204, 113, 0.2);">
+            <i class="fas fa-plus-circle" style="margin-right: 10px;"></i> DEPLOY CARE CENTER
+        </button>
+    </form>
+</div>
+
+<script>
+    const fileInput = document.getElementById('file-input');
+    const fileLabel = document.getElementById('file-label');
+    const dropZone = document.getElementById('drop-zone');
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            fileLabel.innerText = e.target.files[0].name;
+            dropZone.style.borderColor = 'var(--accent)';
+            dropZone.style.background = 'rgba(46, 204, 113, 0.05)';
+        }
+    });
+</script>
+
+<style>
+    input:focus,
+    textarea:focus {
+        border-color: var(--accent) !important;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1);
+    }
+</style>
+{% endblock %}
