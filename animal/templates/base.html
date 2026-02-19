@@ -384,6 +384,7 @@
     <div class="mesh-3"></div>
 </div>
 
+{% block header %}
 <header class="header">
     <a href="/" class="logo">
         <div class="logo-icon">🐾</div>
@@ -392,25 +393,13 @@
 
     <nav class="nav-links">
         <a href="/">Home</a>
-        {% if not request.session.role %}
+       
         <a href="/user_reg/">User</a>
         <a href="/vet_reg/">Veterinarian</a>
         <a href="/rescue_reg/">Rescue Team</a>
-        {% endif %}
+        
 
-        {% if request.session.role == 'admin' %}
-        <a href="/admin_home/" style="color: var(--accent);">Dashboard</a>
-        {% elif request.session.role == 'user' %}
-        <a href="/user_home/" style="color: var(--accent);">Dashboard</a>
-        {% elif request.session.role == 'rescueTeam' %}
-        <a href="/rescue_home/" style="color: var(--accent);">Dashboard</a>
-        {% elif request.session.role == 'vet' %}
-        <a href="/vet_home/" style="color: var(--accent);">Dashboard</a>
-        {% elif request.session.role == 'careCenter' %}
-        <a href="/care_home/" style="color: var(--accent);">Dashboard</a>
-        {% endif %}
-
-        <a href="/login/">Login</a>
+        
     </nav>
 
     <div style="display: flex; gap: 12px;">
@@ -421,6 +410,7 @@
         {% endif %}
     </div>
 </header>
+{% endblock %}
 
 {% if messages %}
 <div class="container" style="margin-top: 20px;">

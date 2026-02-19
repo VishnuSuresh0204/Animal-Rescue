@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'ADMIN/base_admin.html' %}
 {% block title %}Modify Facility{% endblock %}
 
 {% block body %}
@@ -43,7 +43,8 @@
                 <label
                     style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 13px; letter-spacing: 0.5px;">TELEMETRY
                     (PHONE)</label>
-                <input type="text" name="phone" value="{{ center.phone }}" required
+                <input type="tel" name="phone" value="{{ center.phone }}" required pattern="[0-9]{10}"
+                    placeholder="10-digit number"
                     style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
             </div>
         </div>

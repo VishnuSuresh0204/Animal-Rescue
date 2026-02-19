@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<header class="header">
+    <a href="/" class="logo">
+        <div class="logo-icon">🐾</div>
+        RescueSystem
+    </a>
+
+    <nav class="nav-links">
+        <a href="/care_home/">Dashboard</a>
+        <a href="/care_view_pets/">View Pets</a>
+        <a href="/care_chat_vet/">Chat with Vet</a>
+    </nav>
+
+    <div style="display: flex; gap: 12px;">
+        <a href="/logout/" class="btn btn-outline">Logout</a>
+    </div>
+</header>
+{% endblock %}

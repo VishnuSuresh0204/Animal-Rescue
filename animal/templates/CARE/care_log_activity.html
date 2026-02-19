@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'CARE/base_care.html' %}
 {% block title %}Daily Care Log{% endblock %}
 
 {% block body %}
@@ -39,7 +39,7 @@
                         <label
                             style="display: block; margin-bottom: 10px; color: var(--text-secondary); font-weight: 600; font-size: 13px; letter-spacing: 0.5px;">EXECUTION
                             DETAILS</label>
-                        <textarea name="description" required rows="4"
+                        <textarea name="description" required minlength="5" rows="4"
                             placeholder="e.g. Administered prescribed 5ml dosage at 09:00 AM..."
                             style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none; transition: 0.3s;"></textarea>
                     </div>

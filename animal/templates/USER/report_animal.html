@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'USER/base_user.html' %}
 {% block title %}Report Injured Animal{% endblock %}
 
 {% block body %}
@@ -42,7 +42,7 @@
             <label
                 style="display: block; margin-bottom: 10px; color: var(--text-secondary); font-weight: 600; font-size: 14px;">Condition
                 Description</label>
-            <textarea name="description" required
+            <textarea name="description" required minlength="10"
                 placeholder="Describe the injuries or behavior (e.g., 'Limping heavily, possible fracture, near the park fountain')"
                 style="width: 100%; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 14px; color: #fff; height: 120px; resize: none; line-height: 1.6;"></textarea>
         </div>

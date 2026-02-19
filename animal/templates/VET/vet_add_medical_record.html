@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'VET/base_vet.html' %}
 {% block title %}Add Medical Record{% endblock %}
 
 {% block body %}
@@ -25,7 +25,7 @@
                 <label
                     style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">DIAGNOSTIC
                     FINDINGS</label>
-                <textarea name="diagnosis" required rows="4"
+                <textarea name="diagnosis" required minlength="10" rows="4"
                     placeholder="Enter clinical observations, symptoms, and deduced pathology..."
                     style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none; transition: 0.3s;"></textarea>
             </div>
@@ -34,7 +34,7 @@
                 <label
                     style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">TREATMENT
                     PROTOCOL</label>
-                <textarea name="treatment" required rows="4"
+                <textarea name="treatment" required minlength="10" rows="4"
                     placeholder="Detail the procedures performed and subsequent medical plan..."
                     style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none; transition: 0.3s;"></textarea>
             </div>

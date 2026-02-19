@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<header class="header">
+    <a href="/" class="logo">
+        <div class="logo-icon">🐾</div>
+        RescueSystem
+    </a>
+
+    <nav class="nav-links">
+        <a href="/admin_home/">Dashboard</a>
+        <a href="/admin_manage_users/">Users</a>
+        <a href="/admin_manage_care_centers/">Care Centers</a>
+        <a href="/admin_assign_rescue/">Assign</a>
+        <a href="/admin_monitor_all/">Monitor</a>
+        <a href="/admin_report/">Reports</a>
+    </nav>
+
+    <div style="display: flex; gap: 12px;">
+        <a href="/logout/" class="btn btn-outline">Logout</a>
+    </div>
+</header>
+{% endblock %}
