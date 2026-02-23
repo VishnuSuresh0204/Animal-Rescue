@@ -50,61 +50,37 @@
                 </form>
             </div>
 
-            <!-- Clinical Directives Sidebar -->
-            <div class="card" style="padding: 30px; border-radius: 28px; background: rgba(0,0,0,0.2);">
-                <h4
-                    style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; font-weight: 800; letter-spacing: 1.5px; margin-bottom: 25px; display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-user-md"></i> Clinical Directives
-                </h4>
-
-                <div style="display: flex; flex-direction: column; gap: 20px;">
-                    <!-- Meds -->
-                    <div>
-                        <div
-                            style="font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-pills" style="color: #3498db; width: 16px;"></i> Medication
+            <!-- Clinical Chronology (Medical Status) -->
+            <div style="margin-top: 20px;">
+                <div
+                    style="font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-history" style="color: var(--accent); width: 16px;"></i> Clinical Chronology
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    {% for record in animal.medical_records.all %}
+                    <div
+                        style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 15px; border-radius: 16px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-size: 11px; font-weight: 800; color: var(--accent);">{{
+                                record.date|date:"Y-m-d" }}</span>
+                            <span style="font-size: 11px; font-weight: 800; color: #fff;">{{ record.condition_after
+                                }}</span>
                         </div>
-                        <div style="display: flex; flex-direction: column; gap: 8px;">
-                            {% for m in meds %}
-                            <div
-                                style="background: rgba(52, 152, 219, 0.05); border: 1px solid rgba(52, 152, 219, 0.1); padding: 12px; border-radius: 12px; font-size: 13px;">
-                                <strong style="color: #fff;">{{ m.medicine_name }}</strong>
-                                <div style="color: var(--text-secondary); font-size: 12px; margin-top: 2px;">{{ m.dosage
-                                    }} · {{ m.frequency }}</div>
-                            </div>
-                            {% empty %}
-                            <p style="font-size: 13px; color: var(--text-secondary); font-style: italic;">No active med
-                                protocols.</p>
-                            {% endfor %}
-                        </div>
+                        <div style="font-size: 12px; color: #fff; margin-bottom: 4px; font-weight: 600;">{{
+                            record.diagnosis }}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.4;">{{
+                            record.treatment }}</div>
                     </div>
-
-                    <!-- Food -->
-                    <div>
-                        <div
-                            style="font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-utensils" style="color: #f1c40f; width: 16px;"></i> Dietary
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 8px;">
-                            {% for f in foods %}
-                            <div
-                                style="background: rgba(241, 196, 15, 0.05); border: 1px solid rgba(241, 196, 15, 0.1); padding: 12px; border-radius: 12px; font-size: 13px;">
-                                <strong style="color: #fff;">{{ f.food_type }}</strong>
-                                <div style="color: var(--text-secondary); font-size: 12px; margin-top: 2px;">{{
-                                    f.quantity }} · {{ f.frequency }}</div>
-                            </div>
-                            {% empty %}
-                            <p style="font-size: 13px; color: var(--text-secondary); font-style: italic;">Standard
-                                maintenance diet.</p>
-                            {% endfor %}
-                        </div>
-                    </div>
+                    {% empty %}
+                    <p style="font-size: 13px; color: var(--text-secondary); font-style: italic;">No clinical entries
+                        recorded.</p>
+                    {% endfor %}
                 </div>
             </div>
         </div>
 
         <!-- Log History Timeline -->
-        <div class="card" style="padding: 40px; border-radius: 32px;">
+        <div class="card" style="padding: 40px; border-radius: 32px; flex: 1;">
             <div
                 style="display: flex; align-items: center; gap: 15px; margin-bottom: 35px; border-bottom: 1px solid var(--border); padding-bottom: 25px;">
                 <div

@@ -1,158 +1,355 @@
 {% extends 'VET/base_vet.html' %}
-{% block title %}Animal Treatment{% endblock %}
+{% load static %}
+{% block title %}Clinical Dashboard | {{ animal.name|default:animal.species }}{% endblock %}
 
 {% block body %}
 <div class="container animate-fade" style="margin-top: 60px;">
+    <!-- Header with Breadcrumbs -->
     <div
-        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; flex-wrap: wrap; gap: 20px;">
+        style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px; flex-wrap: wrap; gap: 20px;">
         <div>
-            <h2 style="font-size: clamp(28px, 4vw, 36px); font-weight: 800; margin-bottom: 8px;">Medical Center</h2>
-            <p style="color: var(--text-secondary);">Manage clinical procedures and medical history for this resident.
-            </p>
+            <div
+                style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px;">
+                <a href="/vet_view_animals/" style="color: var(--text-secondary); transition: 0.3s;"
+                    onmouseover="this.style.color='var(--accent)'"
+                    onmouseout="this.style.color='var(--text-secondary)'">PATIENT ROSTER</a>
+                <i class="fas fa-chevron-right" style="font-size: 8px;"></i>
+                <span style="color: var(--accent);">CLINICAL DASHBOARD</span>
+            </div>
+            <h2
+                style="font-size: clamp(32px, 5vw, 42px); font-weight: 900; margin-bottom: 8px; letter-spacing: -1.5px;">
+                Medical Center</h2>
+            <p style="color: var(--text-secondary); font-size: 16px;">Clinical surveillance and therapeutic management
+                for subject <b>#{{ animal.id }}</b></p>
         </div>
-        <a href="/vet_view_animals/" class="btn btn-outline" style="padding: 12px 24px;">
-            <i class="fas fa-arrow-left"></i> Patient Roster
-        </a>
+        <div style="display: flex; gap: 12px;">
+            <a href="/vet_view_animals/" class="btn btn-outline"
+                style="padding: 14px 28px; border-radius: 14px; display: flex; align-items: center; gap: 10px; font-weight: 700;">
+                <i class="fas fa-arrow-left"></i> Roster
+            </a>
+            {% if not animal.marked_for_adoption_by_vet %}
+            <a href="/vet_mark_adoption/?id={{ animal.id }}" class="btn btn-primary"
+                style="padding: 14px 28px; border-radius: 14px; background: var(--accent-green); border: none; display: flex; align-items: center; gap: 10px; font-weight: 700; box-shadow: 0 10px 20px rgba(46, 204, 113, 0.2);">
+                <i class="fas fa-check-circle"></i> Clear for Adoption
+            </a>
+            {% endif %}
+        </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: minmax(300px, 380px) 1fr; gap: 40px; align-items: start;">
+    <div style="display: grid; grid-template-columns: minmax(320px, 400px) 1fr; gap: 40px; align-items: start;">
         <!-- Animal Info Sidebar -->
-        <div class="card" style="padding: 30px; position: sticky; top: 100px;">
+        <div class="card"
+            style="padding: 30px; position: sticky; top: 100px; border-radius: 32px; border: 1px solid var(--border); background: rgba(0,0,0,0.25);">
             <div
-                style="height: 280px; border-radius: 20px; overflow: hidden; margin-bottom: 25px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); position: relative;">
+                style="height: 300px; border-radius: 24px; overflow: hidden; margin-bottom: 30px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); position: relative;">
                 {% if animal.photo %}
-                <img src="{{ animal.photo.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="{{ animal.photo.url }}"
+                    style="width: 100%; height: 100%; object-fit: cover; filter: saturate(1.1);">
+                {% elif animal.rescue_report and animal.rescue_report.photo %}
+                <img src="{{ animal.rescue_report.photo.url }}"
+                    style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8;">
+                {% else %}
+                <div
+                    style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); color: var(--text-secondary); opacity: 0.1;">
+                    <i class="fas fa-paw fa-5x"></i>
+                </div>
                 {% endif %}
-                <div style="position: absolute; bottom: 15px; right: 15px;">
+                <div style="position: absolute; top: 20px; left: 20px; display: flex; gap: 8px;">
                     <span
-                        style="background: rgba(231, 76, 60, 0.15); color: #e74c3c; padding: 6px 14px; border-radius: 100px; font-size: 11px; font-weight: 800; border: 1px solid rgba(231, 76, 60, 0.3); backdrop-filter: blur(5px);">
-                        {{ animal.condition|upper }}
-                    </span>
+                        style="background: rgba(0, 242, 254, 0.15); color: var(--accent); padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 800; border: 1px solid rgba(0, 242, 254, 0.3); backdrop-filter: blur(10px);">ACTIVE
+                        PATIENT</span>
                 </div>
             </div>
 
-            <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 8px;">{{ animal.species }}</h3>
-            <p
-                style="color: var(--text-secondary); font-size: 14px; margin-bottom: 30px; display: flex; align-items: center; gap: 8px;">
-                <i class="fas fa-fingerprint" style="color: var(--accent);"></i> TAG#{{ animal.id }}
-            </p>
+            <h3 style="font-size: 28px; font-weight: 900; margin-bottom: 6px; letter-spacing: -1px; color: #fff;">{{ animal.name|default:animal.species }}</h3>
+            <div style="display: flex; gap: 8px; margin-bottom: 25px; flex-wrap: wrap;">
+                <span
+                    style="font-size: 13px; font-weight: 800; color: var(--accent); text-transform: uppercase; background: rgba(0, 242, 254, 0.05); padding: 4px 10px; border-radius: 6px;">{{ animal.species }}</span>
+                {% if animal.breed %}
+                <span
+                    style="font-size: 13px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">·
+                    {{ animal.breed }}</span>
+                {% endif %}
+            </div>
 
-            <div style="display: flex; flex-direction: column; gap: 12px;">
+            <!-- Recovery Progress Bar -->
+            <div
+                style="margin-bottom: 35px; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 20px; border: 1px solid var(--border);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <span
+                        style="font-size: 11px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Recovery
+                        Progress</span>
+                    <span style="font-size: 14px; font-weight: 900; color: var(--accent);">
+                        {% if animal.condition == 'Healthy' %}100%
+                        {% elif animal.condition == 'Recovering' %}80%
+                        {% elif animal.condition == 'Stable' %}60%
+                        {% elif animal.condition == 'Serious' %}40%
+                        {% else %}20%
+                        {% endif %}
+                    </span>
+                </div>
+                <div
+                    style="height: 10px; background: rgba(255,255,255,0.05); border-radius: 100px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);">
+                    {% if animal.condition == 'Healthy' %}
+                    <div style="height: 100%; background: var(--accent); width: 100%;"></div>
+                    {% elif animal.condition == 'Recovering' %}
+                    <div style="height: 100%; background: var(--accent); width: 80%;"></div>
+                    {% elif animal.condition == 'Stable' %}
+                    <div style="height: 100%; background: var(--accent); width: 60%;"></div>
+                    {% elif animal.condition == 'Serious' %}
+                    <div style="height: 100%; background: var(--accent); width: 40%;"></div>
+                    {% else %}
+                    <div style="height: 100%; background: var(--accent); width: 20%;"></div>
+                    {% endif %}
+                </div>
+                <div
+                    style="margin-top: 15px; font-size: 12px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px;">
+                    <div
+                        style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent);">
+                    </div>
+                    STATUS: {{ animal.condition|upper }}
+                </div>
+            </div>
+
+            <div
+                style="background: rgba(255,255,255,0.02); border-radius: 20px; padding: 25px; margin-bottom: 35px; border: 1px solid var(--border);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <div
+                            style="font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">
+                            Gender</div>
+                        <div style="font-size: 15px; font-weight: 700; color: #fff;">{{ animal.gender|default:"N/A" }}
+                        </div>
+                    </div>
+                    <div>
+                        <div
+                            style="font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">
+                            Age</div>
+                        <div style="font-size: 15px; font-weight: 700; color: #fff;">{{ animal.age|default:"Unknown" }}
+                        </div>
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <div
+                            style="font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">
+                            Admitted On</div>
+                        <div
+                            style="font-size: 15px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px;">
+                            <i class="far fa-calendar-alt" style="color: var(--accent); font-size: 13px;"></i>
+                            {{ animal.admitted_at|date:"M d, Y · H:i" }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px;">
                 <a href="/vet_add_medical_record/?id={{ animal.id }}" class="btn btn-primary"
-                    style="padding: 16px; border-radius: 14px; font-weight: 600;">
-                    <i class="fas fa-file-medical"></i> Append Clinical Entry
+                    style="padding: 18px; border-radius: 16px; font-weight: 700; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <i class="fas fa-file-medical"></i> Clinical Entry
                 </a>
                 <a href="/vet_prescribe/?id={{ animal.id }}" class="btn btn-outline"
-                    style="padding: 16px; border-radius: 14px; font-weight: 600;">
-                    <i class="fas fa-prescription"></i> Draft Prescription
+                    style="padding: 18px; border-radius: 16px; font-weight: 700; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <i class="fas fa-prescription"></i> Directives
                 </a>
             </div>
         </div>
 
         <!-- Medical History -->
         <div style="display: flex; flex-direction: column; gap: 40px;">
-            <div class="card" style="padding: 40px;">
+
+            <!-- Case Background: Initial Rescue -->
+            <div class="card"
+                style="padding: 40px; border-radius: 32px; background: rgba(231, 76, 60, 0.05); border: 1px solid rgba(231, 76, 60, 0.1); position: relative; overflow: hidden;">
                 <div
-                    style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px;">
+                    style="position: absolute; top: -20px; right: -20px; font-size: 120px; color: #e74c3c; opacity: 0.03; transform: rotate(-15deg);">
+                    <i class="fas fa-ambulance"></i>
+                </div>
+                <div
+                    style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px; position: relative; z-index: 1;">
                     <div
-                        style="width: 48px; height: 48px; background: rgba(46, 204, 113, 0.05); color: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
-                        <i class="fas fa-history"></i>
+                        style="width: 52px; height: 52px; background: rgba(231, 76, 60, 0.1); color: #e74c3c; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 5px 15px rgba(231, 76, 60, 0.15);">
+                        <i class="fas fa-notes-medical"></i>
                     </div>
-                    <h3 style="font-size: 22px; font-weight: 700;">Clinical Chronology</h3>
+                    <h3 style="font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Initial Field Report</h3>
+                </div>
+                <div
+                    style="background: rgba(0,0,0,0.3); padding: 30px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); position: relative; z-index: 1;">
+                    {% if animal.rescue_report %}
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; opacity: 0.8;">
+                        <span
+                            style="font-size: 11px; font-weight: 900; color: #e74c3c; text-transform: uppercase; letter-spacing: 1.5px;">Case
+                            Narrative</span>
+                        <span style="font-size: 11px; font-weight: 800; color: var(--text-secondary);">GEO: {{ animal.rescue_report.location_text|default:"N/A" }}</span>
+                    </div>
+                    <p style="font-size: 17px; line-height: 1.8; color: #fff; font-weight: 500;">{{ animal.rescue_report.description|default:"No description"|linebreaksbr }}</p>
+                    <div
+                        style="margin-top: 25px; display: flex; align-items: center; gap: 12px; color: var(--text-secondary); font-size: 14px; font-weight: 600; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                        <i class="fas fa-user-shield" style="color: #e74c3c;"></i> Reported by: {{ animal.rescue_report.reported_by.name|default:"Anonymous" }} · Found on {{ animal.rescue_report.reported_at|date:"M d, Y" }}
+                    </div>
+                    {% else %}
+                    <p style="font-size: 17px; line-height: 1.8; color: var(--text-secondary); font-style: italic;">No
+                        rescue report available.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Clinical Chronology -->
+            <div class="card"
+                style="padding: 40px; border-radius: 32px; background: rgba(0,0,0,0.2); border: 1px solid var(--border);">
+                <div
+                    style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 25px;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div
+                            style="width: 52px; height: 52px; background: rgba(0, 242, 254, 0.05); color: var(--accent); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <h3 style="font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Clinical Chronology</h3>
+                    </div>
+                    <span
+                        style="font-size: 12px; font-weight: 800; color: var(--text-secondary); background: rgba(255,255,255,0.03); padding: 8px 16px; border-radius: 10px; border: 1px solid var(--border);">{{ records.count }} ENTRIES</span>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 24px;">
+                <div style="display: flex; flex-direction: column; gap: 30px;">
                     {% for record in records %}
-                    <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 20px; padding: 25px; transition: 0.3s;"
-                        onmouseover="this.style.background='rgba(255,255,255,0.03)'"
-                        onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+                    <div
+                        style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 24px; padding: 35px; position: relative;">
                         <div
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <span style="color: var(--accent); font-weight: 700; font-family: monospace;">{{
-                                    record.date|date:"Y-m-d" }}</span>
+                            style="position: absolute; top: -10px; right: -10px; font-size: 80px; color: #fff; opacity: 0.01; font-weight: 900;">
+                            #{{ forloop.revcounter }}</div>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; position: relative; z-index: 1;">
+                            <div style="display: flex; align-items: center; gap: 20px;">
                                 <div
-                                    style="width: 4px; height: 4px; background: var(--text-secondary); border-radius: 50%;">
+                                    style="padding: 10px 20px; background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.2); border-radius: 12px; color: var(--accent); font-weight: 800; font-family: monospace; font-size: 14px; letter-spacing: 0.5px;">
+                                    {{ record.date|date:"Y-m-d" }}</div>
+                                <div style="height: 20px; width: 1px; background: var(--border);"></div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span
+                                        style="font-size: 11px; font-weight: 900; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Prognosis</span>
+                                    <span
+                                        style="padding: 6px 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 100px; font-size: 11px; font-weight: 800; color: #fff; text-transform: uppercase;">{{ record.condition_after|default:"N/A" }}</span>
                                 </div>
-                                <span style="color: var(--text-secondary); font-size: 13px;">Prognosis: {{
-                                    record.condition_after }}</span>
+                            </div>
+                            <div style="font-size: 13px; color: var(--text-secondary); font-weight: 600;">
+                                <i class="fas fa-user-md" style="margin-right: 6px; color: var(--accent);"></i> DR. {{ record.vet.name|default:"SYSTEM" }}
                             </div>
                         </div>
-
-                        <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
-                            <div>
+                        <div
+                            style="display: grid; grid-template-columns: 1fr; gap: 30px; position: relative; z-index: 1;">
+                            <div
+                                style="background: rgba(0,0,0,0.3); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.03);">
                                 <h4
-                                    style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px;">
-                                    Diagnosis</h4>
-                                <p style="font-size: 15px; line-height: 1.6; color: #fff;">{{ record.diagnosis }}</p>
+                                    style="font-size: 11px; color: var(--accent); text-transform: uppercase; font-weight: 900; letter-spacing: 2px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                    <div
+                                        style="width: 4px; height: 4px; background: var(--accent); border-radius: 50%;">
+                                    </div> Clinical Diagnosis
+                                </h4>
+                                <p style="font-size: 16px; line-height: 1.8; color: #fff; font-weight: 600;">{{ record.diagnosis|linebreaksbr|default:"N/A" }}</p>
                             </div>
-                            <div style="padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05);">
+                            <div style="padding: 0 10px;">
                                 <h4
-                                    style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px;">
-                                    Treatment Narrative</h4>
-                                <p style="font-size: 15px; line-height: 1.6; color: var(--text-secondary);">{{
-                                    record.treatment }}</p>
+                                    style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: 900; letter-spacing: 2px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 4px; height: 4px; background: #e74c3c; border-radius: 50%;">
+                                    </div> Treatment Workflow
+                                </h4>
+                                <p
+                                    style="font-size: 16px; line-height: 1.8; color: var(--text-secondary); font-weight: 500;">
+                                    {{ record.treatment|linebreaksbr|default:"N/A" }}</p>
                             </div>
                         </div>
                     </div>
                     {% empty %}
-                    <div style="text-align: center; padding: 60px 20px; opacity: 0.4;">
-                        <i class="fas fa-notes-medical fa-3x" style="margin-bottom: 20px;"></i>
-                        <p>No historical clinical data available for this subject.</p>
+                    <div style="text-align: center; padding: 100px 20px; opacity: 0.3;">
+                        <div
+                            style="width: 80px; height: 80px; background: rgba(255,255,255,0.03); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px;">
+                            <i class="fas fa-folder-open fa-2x"></i>
+                        </div>
+                        <h4 style="font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px;">No Clinical
+                            Records</h4>
+                        <p style="font-size: 14px;">Historical clinical data is not present for this subject.</p>
                     </div>
                     {% endfor %}
                 </div>
             </div>
 
-            <!-- Prescriptions Section -->
-            <div class="card" style="padding: 40px;">
+            <!-- Active Directives -->
+            <div class="card"
+                style="padding: 40px; border-radius: 32px; background: rgba(0,0,0,0.1); border: 1px solid var(--border);">
                 <div
-                    style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px;">
+                    style="display: flex; align-items: center; gap: 15px; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 25px;">
                     <div
-                        style="width: 48px; height: 48px; background: rgba(52, 152, 219, 0.05); color: #3498db; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
-                        <i class="fas fa-prescription-bottle-alt"></i>
+                        style="width: 52px; height: 52px; background: rgba(52, 152, 219, 0.05); color: #3498db; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        <i class="fas fa-clipboard-list"></i>
                     </div>
-                    <h3 style="font-size: 22px; font-weight: 700;">Active Directives</h3>
+                    <h3 style="font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Active Directives</h3>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
                     <!-- Pharmaceutical -->
                     <div
-                        style="background: rgba(52, 152, 219, 0.03); border: 1px solid rgba(52, 152, 219, 0.1); border-radius: 20px; padding: 25px;">
+                        style="background: rgba(52, 152, 219, 0.05); border: 1px solid rgba(52, 152, 219, 0.1); border-radius: 24px; padding: 30px; position: relative; overflow: hidden;">
+                        <div
+                            style="position: absolute; top: -15px; right: -15px; font-size: 70px; color: #3498db; opacity: 0.05; transform: rotate(15deg);">
+                            <i class="fas fa-pills"></i>
+                        </div>
                         <h4
-                            style="color: #3498db; font-size: 16px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-pills"></i> PHARMACEUTICAL
+                            style="color: #3498db; font-size: 14px; font-weight: 900; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; letter-spacing: 1.5px; text-transform: uppercase;">
+                            <span style="display: flex; align-items: center; gap: 12px;">
+                                <i class="fas fa-capsules" style="font-size: 16px;"></i> Medication
+                            </span>
+                            <a href="/vet_prescribe/?id={{ animal.id }}&type=Medicine"
+                                style="color: #3498db; opacity: 0.6; transition: 0.3s;"
+                                onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">
+                                <i class="fas fa-edit"></i>
+                            </a>
                         </h4>
                         {% for m in animal.medicines.all %}
                         <div
-                            style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(52, 152, 219, 0.05);">
-                            <div style="font-weight: 700; color: #fff; margin-bottom: 4px;">{{ m.medicine_name }}</div>
-                            <div style="font-size: 13px; color: var(--text-secondary);">{{ m.dosage }} · {{ m.frequency
-                                }}</div>
+                            style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 16px; margin-bottom: 12px; border: 1px solid rgba(52, 152, 219, 0.1);">
+                            <div style="font-weight: 800; color: #fff; margin-bottom: 6px; font-size: 16px;">{{ m.medicine_name }}</div>
+                            <div style="font-size: 14px; color: var(--text-secondary); font-weight: 600;">{{ m.dosage }}
+                                · {{ m.frequency }}</div>
                         </div>
                         {% empty %}
-                        <p style="font-size: 13px; color: var(--text-secondary); font-style: italic;">No active
-                            medication protocols.</p>
+                        <div
+                            style="padding: 30px; text-align: center; background: rgba(0,0,0,0.15); border-radius: 16px; color: var(--text-secondary); font-size: 13px; font-style: italic; border: 1px dashed rgba(255,255,255,0.05);">
+                            No active pharmaceutical protocols.</div>
                         {% endfor %}
                     </div>
 
                     <!-- Dietary -->
                     <div
-                        style="background: rgba(241, 196, 15, 0.03); border: 1px solid rgba(241, 196, 15, 0.1); border-radius: 20px; padding: 25px;">
+                        style="background: rgba(241, 196, 15, 0.05); border: 1px solid rgba(241, 196, 15, 0.1); border-radius: 24px; padding: 30px; position: relative; overflow: hidden;">
+                        <div
+                            style="position: absolute; top: -15px; right: -15px; font-size: 70px; color: #f1c40f; opacity: 0.05; transform: rotate(-15deg);">
+                            <i class="fas fa-utensils"></i>
+                        </div>
                         <h4
-                            style="color: #f1c40f; font-size: 16px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-utensils"></i> DIETARY REGIMEN
+                            style="color: #f1c40f; font-size: 14px; font-weight: 900; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; letter-spacing: 1.5px; text-transform: uppercase;">
+                            <span style="display: flex; align-items: center; gap: 12px;">
+                                <i class="fas fa-drumstick-bite" style="font-size: 16px;"></i> Nutrition
+                            </span>
+                            <a href="/vet_prescribe/?id={{ animal.id }}&type=Food"
+                                style="color: #f1c40f; opacity: 0.6; transition: 0.3s;"
+                                onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">
+                                <i class="fas fa-edit"></i>
+                            </a>
                         </h4>
                         {% for f in animal.food_prescriptions.all %}
                         <div
-                            style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(241, 196, 15, 0.05);">
-                            <div style="font-weight: 700; color: #fff; margin-bottom: 4px;">{{ f.food_type }}</div>
-                            <div style="font-size: 13px; color: var(--text-secondary);">{{ f.quantity }} · {{
-                                f.frequency }}</div>
+                            style="background: rgba(0,0,0,0.25); padding: 20px; border-radius: 16px; margin-bottom: 12px; border: 1px solid rgba(241, 196, 15, 0.1);">
+                            <div style="font-weight: 800; color: #fff; margin-bottom: 6px; font-size: 16px;">{{ f.food_type }}</div>
+                            <div style="font-size: 14px; color: var(--text-secondary); font-weight: 600;">{{ f.quantity }} · {{ f.frequency }}</div>
+                            {% if f.notes %}
+                            <div
+                                style="font-size: 12px; color: var(--text-secondary); margin-top: 5px; font-style: italic;">
+                                Note: {{ f.notes }}</div>
+                            {% endif %}
                         </div>
                         {% empty %}
-                        <p style="font-size: 13px; color: var(--text-secondary); font-style: italic;">Standard nutrition
-                            protocol.</p>
+                        <div
+                            style="padding: 30px; text-align: center; background: rgba(0,0,0,0.15); border-radius: 16px; color: var(--text-secondary); font-size: 13px; font-style: italic; border: 1px dashed rgba(255,255,255,0.05);">
+                            Standard maintenance nutrition.</div>
                         {% endfor %}
                     </div>
                 </div>

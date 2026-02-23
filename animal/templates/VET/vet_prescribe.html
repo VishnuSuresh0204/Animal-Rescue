@@ -13,8 +13,8 @@
                 style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(52, 152, 219, 0.05); color: #3498db; border-radius: 18px; font-size: 28px; margin-bottom: 20px; border: 1px solid rgba(52, 152, 219, 0.1);">
                 <i class="fas fa-prescription-bottle-alt"></i>
             </div>
-            <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px;">Formulate
-                Directive</h2>
+            <h2 id="form_title" style="font-size: 32px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px;">
+                Formulate Directive</h2>
             <p style="color: var(--text-secondary); font-size: 16px;">Specify pharmacological or nutritional
                 requirements for the subject's recovery.</p>
         </div>
@@ -27,8 +27,10 @@
                     CATEGORY</label>
                 <select name="type" id="p_type" onchange="toggleFields()" required
                     style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; appearance: none; cursor: pointer;">
-                    <option value="Medicine">Pharmaceutical / Therapeutic</option>
-                    <option value="Food">Nutritional / Dietary / Supplements</option>
+                    <option value="Medicine" {% if request.GET.type=='Medicine' %}selected{% endif %}>Pharmaceutical /
+                        Therapeutic</option>
+                    <option value="Food" {% if request.GET.type=='Food' %}selected{% endif %}>Nutritional / Dietary /
+                        Supplements</option>
                 </select>
             </div>
 
@@ -36,7 +38,7 @@
                 <label id="label_item"
                     style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">IDENTIFIED
                     AGENT</label>
-                <input type="text" name="item" required placeholder="Enter formal name of the agent..."
+                <input type="text" name="item" id="p_item" required placeholder="Enter formal name of the agent..."
                     style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
             </div>
 
@@ -45,14 +47,14 @@
                     <label
                         style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">CONCENTRATION
                         / DOSAGE</label>
-                    <input type="text" name="dosage" placeholder="e.g. 50mg / 10ml"
+                    <input type="text" name="dosage" id="p_dosage" placeholder="e.g. 50mg / 10ml"
                         style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
                 </div>
                 <div>
                     <label
                         style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">PROTOCOL
                         DURATION</label>
-                    <input type="text" name="duration" placeholder="e.g. 14 Days Cycle"
+                    <input type="text" name="duration" id="p_duration" placeholder="e.g. 14 Days Cycle"
                         style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
                 </div>
             </div>
@@ -61,54 +63,115 @@
                 <label
                     style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">SERVING
                     VOLUME</label>
-                <input type="text" name="quantity" placeholder="e.g. 500g per cycle"
+                <input type="text" name="quantity" id="p_quantity" placeholder="e.g. 500g per cycle"
+                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <label
+                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">ADMINISTRATION
+                    FREQUENCY</label>
+                <input type="text" name="freq" id="p_freq" required placeholder="e.g. BID (Twice Daily) / QID"
                     style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
             </div>
 
             <div style="margin-bottom: 45px;">
                 <label
-                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">ADMINISTRATION
-                    FREQUENCY</label>
-                <input type="text" name="freq" required placeholder="e.g. BID (Twice Daily) / QID"
-                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
+                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">ADDITIONAL
+                    CLINICAL NOTES</label>
+                <textarea name="notes" id="p_notes" rows="3"
+                    placeholder="Enter special instructions or clinical notes..."
+                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none;"></textarea>
             </div>
 
             <div style="display: flex; gap: 20px; align-items: center;">
                 <a href="/vet_treatment/?id={{ animal.id }}" class="btn btn-outline"
-                    style="flex: 1; padding: 18px; border-radius: 16px; font-weight: 600;">
-                    Abort
-                </a>
-                <button type="submit" class="btn btn-primary"
-                    style="flex: 2; padding: 18px; border-radius: 16px; font-weight: 700; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); border: none; box-shadow: 0 10px 25px rgba(52, 152, 219, 0.25);">
-                    Confirm Directive
-                </button>
+                    style="flex: 1; padding: 18px; border-radius: 16px; font-weight: 600;">Abort</a>
+                <button type="submit" id="submit_btn" class="btn btn-primary"
+                    style="flex: 2; padding: 18px; border-radius: 16px; font-weight: 700; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); border: none; box-shadow: 0 10px 25px rgba(52, 152, 219, 0.25);">Confirm
+                    Directive</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
+    const existingMed = {
+        name: "{{ existing_medicine.medicine_name|default:'' }}",
+        dosage: "{{ existing_medicine.dosage|default:'' }}",
+        frequency: "{{ existing_medicine.frequency|default:'' }}",
+        duration: "{{ existing_medicine.duration|default:'' }}",
+        notes: "{{ existing_medicine.notes|default:''|escapejs }}"
+    };
+
+    const existingFood = {
+        name: "{{ existing_food.food_type|default:'' }}",
+        quantity: "{{ existing_food.quantity|default:'' }}",
+        frequency: "{{ existing_food.frequency|default:'' }}",
+        notes: "{{ existing_food.notes|default:''|escapejs }}"
+    };
+
     function toggleFields() {
         const type = document.getElementById('p_type').value;
         const medFields = document.getElementById('med_fields');
         const foodField = document.getElementById('food_field');
         const labelItem = document.getElementById('label_item');
+        const formTitle = document.getElementById('form_title');
+        const submitBtn = document.getElementById('submit_btn');
+
+        const pItem = document.getElementById('p_item');
+        const pDosage = document.getElementById('p_dosage');
+        const pDuration = document.getElementById('p_duration');
+        const pQuantity = document.getElementById('p_quantity');
+        const pFreq = document.getElementById('p_freq');
+        const pNotes = document.getElementById('p_notes');
 
         if (type === 'Medicine') {
             medFields.style.display = 'grid';
             foodField.style.display = 'none';
             labelItem.innerText = 'IDENTIFIED AGENT (PHARMA)';
+
+            pItem.value = existingMed.name;
+            pFreq.value = existingMed.frequency;
+            pNotes.value = existingMed.notes;
+            pDosage.value = existingMed.dosage;
+            pDuration.value = existingMed.duration;
+
+            if (existingMed.name) {
+                formTitle.innerText = 'Update Medication Protocol';
+                submitBtn.innerText = 'Update Medication Directive';
+            } else {
+                formTitle.innerText = 'Formulate Medication directive';
+                submitBtn.innerText = 'Establish Medication Directive';
+            }
         } else {
             medFields.style.display = 'none';
             foodField.style.display = 'block';
             labelItem.innerText = 'NUTRITIONAL AGENT / DIET TYPE';
+
+            pItem.value = existingFood.name;
+            pFreq.value = existingFood.frequency;
+            pNotes.value = existingFood.notes;
+            pQuantity.value = existingFood.quantity;
+
+            if (existingFood.name) {
+                formTitle.innerText = 'Update Nutritional Protocol';
+                submitBtn.innerText = 'Update Nutritional Directive';
+            } else {
+                formTitle.innerText = 'Formulate Nutritional Directive';
+                submitBtn.innerText = 'Establish Nutritional Directive';
+            }
         }
     }
+
+    // Initialize fields
+    window.onload = toggleFields;
 </script>
 
 <style>
     input:focus,
-    select:focus {
+    select:focus,
+    textarea:focus {
         border-color: #3498db !important;
         outline: none;
         box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);

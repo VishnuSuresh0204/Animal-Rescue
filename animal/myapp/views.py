@@ -479,7 +479,7 @@ def vet_view_animals(request):
 def vet_treatment(request):
     aid = request.GET.get('id')
     animal = RescuedAnimal.objects.get(id=aid)
-    records = animal.medical_records.all()
+    records = animal.medical_records.all().order_by('-id')
     return render(request, 'VET/vet_treatment.html', {'animal': animal, 'records': records})
 
 def vet_add_medical_record(request):
@@ -513,35 +513,71 @@ def vet_prescribe(request):
         aid = request.GET.get('id')
         animal = RescuedAnimal.objects.get(id=aid)
         vet = Veterinarian.objects.get(id=request.session['profile_id'])
+        
+        # Get existing protocols to allow editing
+        existing_medicine = animal.medicines.first()
+        existing_food = animal.food_prescriptions.first()
+        
         if request.method == 'POST':
             ptype = request.POST.get('type')
             item = request.POST.get('item')
             freq = request.POST.get('freq')
+            notes = request.POST.get('notes', '')
             
             if ptype == 'Medicine':
                 dos = request.POST.get('dosage')
                 dur = request.POST.get('duration')
-                PrescribedMedicine.objects.create(
-                    animal=animal,
-                    vet=vet,
-                    medicine_name=item,
-                    dosage=dos,
-                    frequency=freq,
-                    duration=dur
-                )
+                
+                if existing_medicine:
+                    existing_medicine.medicine_name = item
+                    existing_medicine.dosage = dos
+                    existing_medicine.frequency = freq
+                    existing_medicine.duration = dur
+                    existing_medicine.notes = notes
+                    existing_medicine.vet = vet
+                    existing_medicine.save()
+                    msg = "Medication protocol updated"
+                else:
+                    PrescribedMedicine.objects.create(
+                        animal=animal,
+                        vet=vet,
+                        medicine_name=item,
+                        dosage=dos,
+                        frequency=freq,
+                        duration=dur,
+                        notes=notes
+                    )
+                    msg = "Medication protocol established"
             else:
                 qty = request.POST.get('quantity')
-                PrescribedFood.objects.create(
-                    animal=animal,
-                    vet=vet,
-                    food_type=item,
-                    quantity=qty,
-                    frequency=freq
-                )
+                
+                if existing_food:
+                    existing_food.food_type = item
+                    existing_food.quantity = qty
+                    existing_food.frequency = freq
+                    existing_food.notes = notes
+                    existing_food.vet = vet
+                    existing_food.save()
+                    msg = "Nutritional protocol updated"
+                else:
+                    PrescribedFood.objects.create(
+                        animal=animal,
+                        vet=vet,
+                        food_type=item,
+                        quantity=qty,
+                        frequency=freq,
+                        notes=notes
+                    )
+                    msg = "Nutritional protocol established"
             
-            messages.success(request, f"{ptype} prescribed")
+            messages.success(request, msg)
             return redirect(f'/vet_treatment/?id={aid}')
-        return render(request, 'VET/vet_prescribe.html', {'animal': animal})
+            
+        return render(request, 'VET/vet_prescribe.html', {
+            'animal': animal,
+            'existing_medicine': existing_medicine,
+            'existing_food': existing_food
+        })
     return redirect('/login/')
 
 def vet_mark_adoption(request):
