@@ -446,14 +446,16 @@ def rescue_transport(request):
         vet = Veterinarian.objects.get(id=v_id)
         center = CareCenter.objects.get(id=c_id)
         
-        # Create RescuedAnimal record
-        RescuedAnimal.objects.create(
+        # Safely create or update RescuedAnimal record
+        RescuedAnimal.objects.update_or_create(
             rescue_report=report,
-            species=report.animal_type,
-            photo=report.photo,
-            assigned_vet=vet,
-            care_center=center,
-            status='UnderTreatment'
+            defaults={
+                'species': report.animal_type,
+                'photo': report.photo,
+                'assigned_vet': vet,
+                'care_center': center,
+                'status': 'UnderTreatment'
+            }
         )
         
         report.status = 'AtVet'
