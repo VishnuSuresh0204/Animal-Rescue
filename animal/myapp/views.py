@@ -458,7 +458,7 @@ def rescue_transport(request):
             }
         )
         
-        report.status = 'AtVet'
+        report.status = 'Treated'
         report.save()
         
         messages.success(request, "Animal transported.")
