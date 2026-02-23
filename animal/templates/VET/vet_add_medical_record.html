@@ -1,5 +1,5 @@
 {% extends 'VET/base_vet.html' %}
-{% block title %}Add Medical Record{% endblock %}
+{% block title %}{% if record %}Update Clinical Entry{% else %}Add Medical Record{% endif %}{% endblock %}
 
 {% block body %}
 <div class="container animate-fade" style="max-width: 800px; margin-top: 60px;">
