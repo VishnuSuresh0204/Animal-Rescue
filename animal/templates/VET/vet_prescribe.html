@@ -27,18 +27,18 @@
                     CATEGORY</label>
                 <select name="type" id="p_type" onchange="toggleFields()" required
                     style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; appearance: none; cursor: pointer;">
-                    <option value="Medicine" {% if request.GET.type == 'Medicine' %}selected{% endif %}>Pharmaceutical /
+                    <option value="Medicine" {% if request.GET.type=='Medicine' %}selected{% endif %}>Pharmaceutical /
                         Therapeutic</option>
-                    <option value="Food" {% if request.GET.type == 'Food' %}selected{% endif %}>Nutritional / Dietary /
+                    <option value="Food" {% if request.GET.type=='Food' %}selected{% endif %}>Nutritional / Dietary /
                         Supplements</option>
                 </select>
             </div>
 
             <div style="margin-bottom: 30px;">
                 <label id="label_item"
-                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">IDENTIFIED
-                    AGENT</label>
-                <input type="text" name="item" id="p_item" required placeholder="Enter formal name of the agent..."
+                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">MEDICINE
+                    NAME</label>
+                <input type="text" name="item" id="p_item" required placeholder="Enter medicine name or diet type..."
                     style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
             </div>
 
@@ -129,7 +129,7 @@
         if (type === 'Medicine') {
             medFields.style.display = 'grid';
             foodField.style.display = 'none';
-            labelItem.innerText = 'IDENTIFIED AGENT (PHARMA)';
+            labelItem.innerText = 'MEDICINE NAME';
 
             pItem.value = existingMed.name;
             pFreq.value = existingMed.frequency;
