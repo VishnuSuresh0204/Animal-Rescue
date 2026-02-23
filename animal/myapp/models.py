@@ -53,6 +53,7 @@ class Veterinarian(models.Model):
     qualification = models.CharField(max_length=100, null=True)
     experience = models.CharField(max_length=50, null=True)
     image = models.ImageField(upload_to='vets/', null=True, blank=True)
+    certificate = models.FileField(upload_to='vet_certificates/', null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
 
     def __str__(self):

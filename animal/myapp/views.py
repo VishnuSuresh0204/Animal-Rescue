@@ -109,9 +109,10 @@ def vet_reg(request):
         ql = request.POST.get('qualification')
         ex = request.POST.get('experience')
         img = request.FILES.get('image')
+        cert = request.FILES.get('certificate')
         if not Login.objects.filter(username=u).exists():
             user = Login.objects.create_user(username=u, password=p, usertype='vet', view_password=p)
-            Veterinarian.objects.create(user=user, name=n, email=e, phone=ph, qualification=ql, experience=ex, image=img)
+            Veterinarian.objects.create(user=user, name=n, email=e, phone=ph, qualification=ql, experience=ex, image=img, certificate=cert)
             messages.success(request, "Registration successful. Wait for admin approval.")
             return redirect('/login/')
         else:
@@ -170,6 +171,10 @@ def admin_approve_team(request):
         team.status = 'Approved'
         team.save()
         messages.success(request, f"Approved {team.name}")
+    
+    referer = request.META.get('HTTP_REFERER')
+    if referer and 'admin_view_rescue_teams' in referer:
+        return redirect(referer)
     return redirect('/admin_manage_users/')
 
 def admin_reject_team(request):
@@ -179,6 +184,36 @@ def admin_reject_team(request):
         team.status = 'Rejected'
         team.save()
         messages.info(request, f"Rejected {team.name}")
+    
+    referer = request.META.get('HTTP_REFERER')
+    if referer and 'admin_view_rescue_teams' in referer:
+        return redirect(referer)
+    return redirect('/admin_manage_users/')
+
+def admin_approve_vet(request):
+    vid = request.GET.get('id')
+    vet = Veterinarian.objects.filter(id=vid).first()
+    if vet:
+        vet.status = 'Approved'
+        vet.save()
+        messages.success(request, f"Medical credentials authorized for {vet.name}")
+    
+    referer = request.META.get('HTTP_REFERER')
+    if referer and 'admin_view_vets' in referer:
+        return redirect(referer)
+    return redirect('/admin_manage_users/')
+
+def admin_reject_vet(request):
+    vid = request.GET.get('id')
+    vet = Veterinarian.objects.filter(id=vid).first()
+    if vet:
+        vet.status = 'Rejected'
+        vet.save()
+        messages.info(request, f"Application rejected for {vet.name}")
+    
+    referer = request.META.get('HTTP_REFERER')
+    if referer and 'admin_view_vets' in referer:
+        return redirect(referer)
     return redirect('/admin_manage_users/')
 
 def admin_block_user(request):
@@ -187,6 +222,16 @@ def admin_block_user(request):
     if user:
         user.is_active = False
         user.save()
+        # Sync status on linked profile
+        if hasattr(user, 'vet_profile'):
+            user.vet_profile.status = 'Blocked'
+            user.vet_profile.save()
+        elif hasattr(user, 'rescue_profile'):
+            user.rescue_profile.status = 'Blocked'
+            user.rescue_profile.save()
+        elif hasattr(user, 'care_profile'):
+            user.care_profile.status = 'Blocked'
+            user.care_profile.save()
         messages.info(request, f"Blocked account for {user.username}")
     
     # Redirect back to referring page or default
@@ -202,6 +247,16 @@ def admin_unblock_user(request):
     if user:
         user.is_active = True
         user.save()
+        # Sync status on linked profile
+        if hasattr(user, 'vet_profile'):
+            user.vet_profile.status = 'Approved'
+            user.vet_profile.save()
+        elif hasattr(user, 'rescue_profile'):
+            user.rescue_profile.status = 'Approved'
+            user.rescue_profile.save()
+        elif hasattr(user, 'care_profile'):
+            user.care_profile.status = 'Approved'
+            user.care_profile.save()
         messages.success(request, f"Activated account for {user.username}")
     
     # Redirect back to referring page or default

@@ -36,6 +36,9 @@
                             Credentials</th>
                         <th
                             style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                            Certificate</th>
+                        <th
+                            style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
                             Access Status</th>
                         <th
                             style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
@@ -54,6 +57,17 @@
                                 experience</div>
                         </td>
                         <td style="padding: 20px;">
+                            {% if vet.certificate %}
+                            <a href="{{ vet.certificate.url }}" target="_blank" class="btn btn-outline"
+                                style="padding: 6px 12px; font-size: 11px; border-radius: 8px;">
+                                <i class="fas fa-file-pdf"></i> View Registry
+                            </a>
+                            {% else %}
+                            <span style="color: var(--text-secondary); font-size: 12px; opacity: 0.5;">No
+                                document</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 20px;">
                             {% if vet.status == 'Approved' %}
                             <span
                                 style="background: rgba(46, 204, 113, 0.1); color: var(--accent); padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(46, 204, 113, 0.2);">AUTHORIZED</span>
@@ -69,8 +83,10 @@
                         <td style="padding: 20px; border-radius: 0 14px 14px 0;">
                             <div style="display: flex; gap: 8px;">
                                 {% if vet.status == 'Pending' %}
-                                <a href="/admin_approve_team/?id={{ vet.id }}" class="btn btn-primary"
+                                <a href="/admin_approve_vet/?id={{ vet.id }}" class="btn btn-primary"
                                     style="padding: 8px 16px; font-size: 12px; border-radius: 10px;">Authorize</a>
+                                <a href="/admin_reject_vet/?id={{ vet.id }}" class="btn btn-outline"
+                                    style="padding: 8px 16px; font-size: 12px; border-radius: 10px; color: #e74c3c;">Decline</a>
                                 {% endif %}
 
                                 {% if vet.user.is_active %}

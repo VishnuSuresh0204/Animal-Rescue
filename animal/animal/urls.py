@@ -45,6 +45,8 @@ urlpatterns = [
     path('admin_reject_team/', views.admin_reject_team),
     path('admin_block_user/', views.admin_block_user),
     path('admin_unblock_user/', views.admin_unblock_user),
+    path('admin_approve_vet/', views.admin_approve_vet),
+    path('admin_reject_vet/', views.admin_reject_vet),
     path('admin_manage_care_centers/', views.admin_manage_care_centers),
     path('admin_add_care_center/', views.admin_add_care_center),
     path('admin_edit_care_center/', views.admin_edit_care_center),
