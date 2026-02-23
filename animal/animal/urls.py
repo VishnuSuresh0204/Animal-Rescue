@@ -54,6 +54,7 @@ urlpatterns = [
     path('admin_assign_rescue/', views.admin_assign_rescue),
     path('admin_assign_to_team/', views.admin_assign_to_team),
     path('admin_monitor_all/', views.admin_monitor_all),
+    path('admin_reassign_vet/', views.admin_reassign_vet),
     path('admin_report/', views.admin_report),
 
     # User actions

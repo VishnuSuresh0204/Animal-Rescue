@@ -1,0 +1,97 @@
+{% extends 'ADMIN/base_admin.html' %}
+{% block title %}Escalate Medical Oversight{% endblock %}
+
+{% block body %}
+<div class="container animate-fade" style="max-width: 800px; margin-top: 60px;">
+    <div class="card" style="padding: 50px; border-radius: 32px; position: relative; overflow: hidden;">
+        <!-- Decorative subtle element -->
+        <div
+            style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: var(--accent); opacity: 0.03; border-radius: 50%; filter: blur(40px);">
+        </div>
+
+        <div style="text-align: center; margin-bottom: 45px;">
+            <div
+                style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(46, 204, 113, 0.1); color: var(--accent); border-radius: 18px; font-size: 28px; margin-bottom: 20px; border: 1px solid rgba(46, 204, 113, 0.2);">
+                <i class="fas fa-user-md"></i>
+            </div>
+            <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px;">Re-assign
+                Medical Lead</h2>
+            <p style="color: var(--text-secondary); font-size: 16px;">Transfer clinical responsibility for subject #{{
+                animal.id }} to a new practitioner.</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div
+                style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 40px; display: flex; gap: 24px; align-items: center;">
+                <div
+                    style="width: 100px; height: 100px; border-radius: 16px; overflow: hidden; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); flex-shrink: 0;">
+                    {% if animal.photo %}
+                    <img src="{{ animal.photo.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                    <div
+                        style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); opacity: 0.2;">
+                        <i class="fas fa-paw fa-2x"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                        <span
+                            style="background: rgba(241, 196, 15, 0.1); color: #f1c40f; padding: 4px 10px; border-radius: 100px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px;">PATIENT</span>
+                        <h4 style="font-size: 18px; font-weight: 700; margin: 0;">{{ animal.species }}</h4>
+                    </div>
+                    <p
+                        style="color: var(--text-secondary); font-size: 14px; margin: 0; display: flex; align-items: center; gap: 6px;">
+                        <i class="fas fa-user-md" style="color: var(--accent);"></i> Current Lead: {{
+                        animal.assigned_vet.name }}
+                    </p>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 45px;">
+                <div class="form-group">
+                    <label
+                        style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-stethoscope" style="color: var(--accent);"></i> NEW ATTENDING VETERINARIAN
+                    </label>
+                    <div style="position: relative;">
+                        <select name="vet" required
+                            style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; appearance: none; transition: 0.3s; cursor: pointer;">
+                            <option value="" disabled selected>Select new practitioner...</option>
+                            {% for v in vets %}
+                            <option value="{{ v.id }}" {% if v.id==animal.assigned_vet.id %}disabled{% endif %}>
+                                {{ v.name }} — {{ v.qualification }} {% if v.id == animal.assigned_vet.id %}(Currently
+                                Assigned){% endif %}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <i class="fas fa-chevron-down"
+                            style="position: absolute; right: 20px; top: 22px; color: var(--text-secondary); pointer-events: none;"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <a href="/admin_monitor_all/" class="btn btn-outline"
+                    style="flex: 1; padding: 18px; border-radius: 16px; font-weight: 600; text-align: center; text-decoration: none;">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-primary"
+                    style="flex: 2; padding: 18px; border-radius: 16px; font-weight: 700;">
+                    Update Assignment
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    select:focus {
+        border-color: var(--accent) !important;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1);
+    }
+</style>
+{% endblock %}

@@ -328,6 +328,21 @@ def admin_assign_to_team(request):
         messages.success(request, f"Assigned to {team.name}")
     return redirect('/admin_assign_rescue/')
 
+def admin_reassign_vet(request):
+    if 'role' in request.session and request.session['role'] == 'admin':
+        aid = request.GET.get('id')
+        animal = RescuedAnimal.objects.get(id=aid)
+        vets = Veterinarian.objects.filter(status='Approved')
+        if request.method == 'POST':
+            v_id = request.POST.get('vet')
+            vet = Veterinarian.objects.get(id=v_id)
+            animal.assigned_vet = vet
+            animal.save()
+            messages.success(request, f"Medical oversight re-assigned to {vet.name}")
+            return redirect('/admin_monitor_all/')
+        return render(request, 'ADMIN/admin_reassign_vet.html', {'animal': animal, 'vets': vets})
+    return redirect('/login/')
+
 def admin_monitor_all(request):
     reports = RescueReport.objects.all()
     animals = RescuedAnimal.objects.all()
