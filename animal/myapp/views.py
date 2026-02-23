@@ -395,6 +395,21 @@ def user_request_adoption(request):
     animals = RescuedAnimal.objects.filter(listed_for_adoption=True)
     return render(request, 'USER/user_request_adoption.html', {'animals': animals})
 
+def user_animal_detail(request):
+    aid = request.GET.get('id')
+    animal = RescuedAnimal.objects.get(id=aid)
+    records = animal.medical_records.all().order_by('-date')
+    meds = animal.medicines.all()
+    foods = animal.food_prescriptions.all()
+    logs = animal.care_logs.all().order_by('-given_at')
+    return render(request, 'USER/user_animal_detail.html', {
+        'animal': animal, 
+        'records': records, 
+        'meds': meds, 
+        'foods': foods, 
+        'logs': logs
+    })
+
 def user_submit_adoption(request):
     if 'profile_id' in request.session:
         aid = request.GET.get('id')
@@ -661,6 +676,44 @@ def care_list_adoption(request):
         else:
             messages.error(request, "Need vet approval first")
     return redirect('/care_view_pets/')
+
+def care_manage_adoptions(request):
+    if 'profile_id' in request.session:
+        center = CareCenter.objects.get(id=request.session['profile_id'])
+        requests = AdoptionRequest.objects.filter(animal__care_center=center).order_by('-requested_at')
+        return render(request, 'CARE/care_manage_adoptions.html', {'requests': requests})
+    return redirect('/login/')
+
+def care_approve_adoption(request):
+    rid = request.GET.get('id')
+    req = AdoptionRequest.objects.get(id=rid)
+    req.status = 'Approved'
+    req.save()
+    
+    animal = req.animal
+    animal.status = 'Adopted'
+    animal.save()
+    
+    # Reject other requests for the same animal
+    AdoptionRequest.objects.filter(animal=animal, status='Pending').update(status='Rejected')
+    
+    messages.success(request, f"Adoption approved for {animal.name}")
+    return redirect('/care_manage_adoptions/')
+
+def care_reject_adoption(request):
+    rid = request.GET.get('id')
+    req = AdoptionRequest.objects.get(id=rid)
+    req.status = 'Rejected'
+    req.save()
+    messages.info(request, "Adoption request rejected")
+    return redirect('/care_manage_adoptions/')
+
+def care_adoption_history(request):
+    if 'profile_id' in request.session:
+        center = CareCenter.objects.get(id=request.session['profile_id'])
+        animals = RescuedAnimal.objects.filter(care_center=center, status='Adopted').order_by('-admitted_at')
+        return render(request, 'CARE/care_history.html', {'animals': animals})
+    return redirect('/login/')
 
 def care_chat_vet(request):
     if 'profile_id' in request.session:

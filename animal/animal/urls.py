@@ -62,6 +62,7 @@ urlpatterns = [
     path('user_track_rescue/', views.user_track_rescue),
     path('user_request_adoption/', views.user_request_adoption),
     path('user_submit_adoption/', views.user_submit_adoption),
+    path('user_animal_detail/', views.user_animal_detail),
     path('user_profile/', views.user_profile),
 
     # Rescue Team actions
@@ -84,6 +85,10 @@ urlpatterns = [
     path('care_view_pets/', views.care_view_pets),
     path('care_log_activity/', views.care_log_activity),
     path('care_list_adoption/', views.care_list_adoption),
+    path('care_manage_adoptions/', views.care_manage_adoptions),
+    path('care_approve_adoption/', views.care_approve_adoption),
+    path('care_reject_adoption/', views.care_reject_adoption),
+    path('care_history/', views.care_adoption_history),
     path('care_chat_vet/', views.care_chat_vet),
     path('care_profile/', views.care_profile),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

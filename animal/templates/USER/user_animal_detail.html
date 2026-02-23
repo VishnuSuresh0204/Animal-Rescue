@@ -1,0 +1,160 @@
+{% extends 'USER/base_user.html' %}
+{% block title %}Clinical Detail | {{ animal.name|default:animal.species }}{% endblock %}
+{% block body %}
+<div class="container animate-fade" style="margin-top: 60px;">
+    <div
+        style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px; flex-wrap: wrap; gap: 20px;">
+        <div>
+            <div
+                style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 12px;">
+                <a href="/user_request_adoption/" style="color: var(--text-secondary);">ADOPTION LISTING</a>
+                <i class="fas fa-chevron-right" style="font-size: 8px;"></i>
+                <span style="color: var(--accent);">ANIMAL FILE</span>
+            </div>
+            <h2 style="font-size: clamp(32px, 5vw, 42px); font-weight: 900; margin-bottom: 8px;">{{
+                animal.name|default:animal.species }}</h2>
+            <p style="color: var(--text-secondary); font-size: 16px;">Comprehensive clinical history for ID <b>#{{
+                    animal.id }}</b></p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <a href="/user_request_adoption/" class="btn btn-outline" style="padding: 14px 28px;"><i
+                    class="fas fa-arrow-left"></i> Gallery</a>
+            <a href="/user_submit_adoption/?id={{ animal.id }}" class="btn btn-primary"
+                style="padding: 14px 28px; background: var(--accent-green); border: none; font-weight: 700;"><i
+                    class="fas fa-heart"></i> Request Adoption</a>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 350px 1fr; gap: 40px; align-items: start;">
+        <div class="card"
+            style="padding: 30px; position: sticky; top: 100px; border-radius: 32px; background: rgba(0,0,0,0.2);">
+            <div style="height: 240px; border-radius: 20px; overflow: hidden; margin-bottom: 25px;">
+                {% if animal.photo %}
+                <img src="{{ animal.photo.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                <div
+                    style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); color: var(--text-secondary); opacity: 0.1;">
+                    <i class="fas fa-paw fa-4x"></i></div>
+                {% endif %}
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-bottom: 25px; flex-wrap: wrap;">
+                <span
+                    style="font-size: 11px; font-weight: 800; color: var(--accent); text-transform: uppercase; background: rgba(0, 242, 254, 0.05); padding: 4px 10px; border-radius: 6px;">
+                    {{ animal.species }}
+                </span>
+                {% if animal.breed %}
+                <span
+                    style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">
+                    {{ animal.breed }}
+                </span>
+                {% endif %}
+            </div>
+
+            <div style="margin-bottom: 30px; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <span
+                        style="font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase;">Recovery
+                        Progress</span>
+                    <span style="font-size: 12px; font-weight: 900; color: var(--accent);">
+                        {% if animal.condition == 'Healthy' %}100%
+                        {% elif animal.condition == 'Recovering' %}80%
+                        {% elif animal.condition == 'Stable' %}60%
+                        {% elif animal.condition == 'Serious' %}40%
+                        {% else %}20%
+                        {% endif %}
+                    </span>
+                </div>
+                <div style="height: 8px; background: rgba(255,255,255,0.05); border-radius: 100px; overflow: hidden;">
+                    {% if animal.condition == 'Healthy' %}<div
+                        style="width: 100%; height: 100%; background: var(--accent);"></div>
+                    {% elif animal.condition == 'Recovering' %}<div
+                        style="width: 80%; height: 100%; background: var(--accent);"></div>
+                    {% elif animal.condition == 'Stable' %}<div
+                        style="width: 60%; height: 100%; background: var(--accent);"></div>
+                    {% elif animal.condition == 'Serious' %}<div
+                        style="width: 40%; height: 100%; background: var(--accent);"></div>
+                    {% else %}<div style="width: 20%; height: 100%; background: var(--accent);"></div>{% endif %}
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="font-size: 13px; color: var(--text-secondary);"><b>Center:</b> {{ animal.care_center.name }}
+                </div>
+                <div style="font-size: 13px; color: var(--text-secondary);"><b>Gender:</b> {{
+                    animal.gender|default:"N/A" }}</div>
+                <div style="font-size: 13px; color: var(--text-secondary);"><b>Age:</b> {{ animal.age|default:"Unknown"
+                    }}</div>
+            </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 40px;">
+            <!-- Active Prescriptions (For Transparency) -->
+            <div class="card"
+                style="padding: 40px; border-radius: 32px; background: rgba(52, 152, 219, 0.05); border: 1px solid rgba(52, 152, 219, 0.1);">
+                <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 30px; letter-spacing: -0.5px;"><i
+                        class="fas fa-file-medical-alt" style="color: #3498db; margin-right: 12px;"></i> Active
+                    Therapeutic Protocols</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div>
+                        <h4
+                            style="font-size: 11px; font-weight: 900; color: #3498db; text-transform: uppercase; margin-bottom: 15px;">
+                            Pharmaceuticals</h4>
+                        {% for m in meds %}
+                        <div
+                            style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 14px; margin-bottom: 10px;">
+                            <div style="font-weight: 700; font-size: 14px;">{{m.medicine_name}}</div>
+                            <div style="font-size: 12px; color: var(--text-secondary);">{{m.dosage}} • {{m.frequency}}
+                            </div>
+                        </div>
+                        {% empty %}<p style="font-size: 13px; color: var(--text-secondary); font-style: italic;">No
+                            active medications.</p>{% endfor %}
+                    </div>
+                    <div>
+                        <h4
+                            style="font-size: 11px; font-weight: 900; color: #f1c40f; text-transform: uppercase; margin-bottom: 15px;">
+                            Nutrition</h4>
+                        {% for f in foods %}
+                        <div
+                            style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 14px; margin-bottom: 10px;">
+                            <div style="font-weight: 700; font-size: 14px;">{{f.food_type}}</div>
+                            <div style="font-size: 12px; color: var(--text-secondary);">{{f.quantity}} • {{f.frequency}}
+                            </div>
+                        </div>
+                        {% empty %}<p style="font-size: 13px; color: var(--text-secondary); font-style: italic;">
+                            Standard diet.</p>{% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinical Chronology -->
+            <div class="card" style="padding: 40px; border-radius: 32px;">
+                <h3
+                    style="font-size: 20px; font-weight: 800; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 25px;">
+                    <i class="fas fa-stethoscope" style="color: var(--accent); margin-right: 12px;"></i> Case Chronology
+                </h3>
+                {% for record in records %}
+                <div
+                    style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 20px; padding: 25px; margin-bottom: 20px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <span
+                            style="font-size: 11px; font-weight: 900; color: var(--accent); text-transform: uppercase;">{{
+                            record.date|date:"Y-m-d" }}</span>
+                        <span
+                            style="padding: 4px 12px; background: rgba(255,255,255,0.05); border-radius: 100px; font-size: 11px; font-weight: 800;">Condition:
+                            {{ record.condition_after }}</span>
+                    </div>
+                    <div style="font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 10px;">{{
+                        record.diagnosis }}</div>
+                    <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0;">{{
+                        record.treatment }}</p>
+                </div>
+                {% empty %}<p
+                    style="font-size: 15px; color: var(--text-secondary); font-style: italic; text-align: center; padding: 40px;">
+                    No historical records found for this resident.</p>{% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

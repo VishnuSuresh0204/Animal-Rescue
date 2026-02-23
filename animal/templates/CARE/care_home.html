@@ -43,15 +43,31 @@
             </div>
         </a>
 
+        <a href="/care_manage_adoptions/" style="text-decoration: none; color: inherit;">
+            <div class="card" style="border: 1px solid rgba(241, 196, 15, 0.1); background: rgba(241, 196, 15, 0.02);">
+                <div class="feature-icon" style="background: rgba(241, 196, 15, 0.05); color: #f1c40f;">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3>Placement Hub</h3>
+                <p style="color: var(--text-secondary); line-height: 1.7;">Review and action adoption requests. Finalize
+                    placements and maintain historical records of successfully adopted animal friends.</p>
+                <div
+                    style="margin-top: 24px; color: #f1c40f; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                    Handle Requests <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+        </a>
+
         <div class="card">
-            <div class="feature-icon" style="background: rgba(241, 196, 15, 0.05); color: #f1c40f;">
+            <div class="feature-icon" style="background: rgba(255, 255, 255, 0.03); color: var(--text-secondary);">
                 <i class="fas fa-info-circle"></i>
             </div>
             <h3>Facility Profile</h3>
             <div style="margin-top: 20px;">
                 <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 8px;">Shelter Name: <strong
                         style="color: #fff;">{{ user.care_profile.name }}</strong></p>
-                <p style="color: var(--text-secondary); font-size: 14px;">License Auth: <strong style="color: #fff;">{{ user.care_profile.license_number }}</strong></p>
+                <p style="color: var(--text-secondary); font-size: 14px;">License Auth: <strong style="color: #fff;">{{
+                        user.care_profile.license_number }}</strong></p>
                 <p style="color: var(--text-secondary); font-size: 14px; margin-top: 10px;">Status: <span
                         style="color: var(--accent); font-weight: 700;">AUTHORIZED CENTER</span></p>
             </div>
@@ -59,4 +75,3 @@
     </div>
 </div>
 {% endblock %}
-

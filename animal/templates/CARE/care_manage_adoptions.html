@@ -1,0 +1,78 @@
+{% extends 'CARE/base_care.html' %}
+{% block title %}Manage Adoptions{% endblock %}
+{% block body %}
+<div class="container animate-fade" style="margin-top: 60px;">
+    <div
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; flex-wrap: wrap; gap: 20px;">
+        <div>
+            <h2 style="font-size: clamp(28px, 4vw, 36px); font-weight: 800; margin-bottom: 8px;">Placement Management
+            </h2>
+            <p style="color: var(--text-secondary);">Review and verify adoption requests from the community.</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <a href="/care_history/" class="btn btn-outline" style="padding: 12px 24px;"><i class="fas fa-history"></i>
+                Adoption History</a>
+            <a href="/care_home/" class="btn btn-outline" style="padding: 12px 24px;"><i class="fas fa-arrow-left"></i>
+                Dashboard</a>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+        {% for req in requests %}
+        <div class="card"
+            style="padding: 30px; border-radius: 24px; border: 1px solid var(--border); background: rgba(0,0,0,0.2);">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                <div style="display: flex; align-items: center; gap: 25px;">
+                    <div style="width: 80px; height: 80px; border-radius: 18px; overflow: hidden; background: #000;">
+                        {% if req.animal.photo %}<img src="{{ req.animal.photo.url }}"
+                            style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}<div
+                            style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; opacity: 0.1;">
+                            <i class="fas fa-paw fa-2x"></i></div>{% endif %}
+                    </div>
+                    <div>
+                        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 4px;">{{
+                            req.animal.name|default:req.animal.species }}</h3>
+                        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">Request by:
+                            <strong style="color: #fff;">{{ req.user.name }}</strong> ({{ req.user.user.email }})</div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span
+                                style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--accent); background: rgba(0, 242, 254, 0.05); padding: 4px 10px; border-radius: 6px;">{{
+                                req.animal.species }}</span>
+                            <div style="font-size: 12px; color: var(--text-secondary);"><i class="fas fa-clock"></i> {{
+                                req.requested_at|date:"M d, Y H:i" }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
+                    <div
+                        style="padding: 6px 16px; border-radius: 100px; font-size: 11px; font-weight: 800; background: {% if req.status == 'Pending' %}rgba(241, 196, 15, 0.1){% elif req.status == 'Approved' %}rgba(46, 204, 113, 0.1){% else %}rgba(231, 76, 60, 0.1){% endif %}; color: {% if req.status == 'Pending' %}#f1c40f{% elif req.status == 'Approved' %}#2ecc71{% else %}#e74c3c{% endif %}; border: 1px solid currentColor;">
+                        {{ req.status|upper }}
+                    </div>
+                    {% if req.status == 'Pending' %}
+                    <div style="display: flex; gap: 10px;">
+                        <a href="/care_approve_adoption/?id={{ req.id }}" class="btn btn-primary"
+                            style="padding: 10px 20px; font-size: 13px; background: var(--accent-green); border-color: var(--accent-green);">Approve</a>
+                        <a href="/care_reject_adoption/?id={{ req.id }}" class="btn btn-outline"
+                            style="padding: 10px 20px; font-size: 13px; border-color: #e74c3c; color: #e74c3c;">Reject</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div
+            style="text-align: center; padding: 100px 20px; background: var(--surface); border-radius: 32px; border: 2px dashed var(--border);">
+            <div
+                style="width: 80px; height: 80px; background: rgba(255,255,255,0.03); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 32px; margin: 0 auto 24px;">
+                <i class="fas fa-envelope-open-text"></i></div>
+            <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 12px;">No Active Requests</h3>
+            <p style="color: var(--text-secondary); font-size: 16px;">There are currently no adoption requests pending
+                your verification.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
