@@ -485,8 +485,14 @@ def vet_treatment(request):
 def vet_add_medical_record(request):
     if 'profile_id' in request.session:
         aid = request.GET.get('id')
+        rid = request.GET.get('rid')
         animal = RescuedAnimal.objects.get(id=aid)
         vet = Veterinarian.objects.get(id=request.session['profile_id'])
+        
+        existing_record = None
+        if rid:
+            existing_record = MedicalRecord.objects.filter(id=rid).first()
+
         if request.method == 'POST':
             diag = request.POST.get('diagnosis')
             treat = request.POST.get('treatment')
@@ -494,13 +500,21 @@ def vet_add_medical_record(request):
             gender = request.POST.get('gender')
             age = request.POST.get('age')
             
-            MedicalRecord.objects.create(
-                animal=animal,
-                vet=vet,
-                diagnosis=diag,
-                treatment=treat,
-                condition_after=cond
-            )
+            if existing_record:
+                existing_record.diagnosis = diag
+                existing_record.treatment = treat
+                existing_record.condition_after = cond
+                existing_record.save()
+                msg = "Medical record updated"
+            else:
+                MedicalRecord.objects.create(
+                    animal=animal,
+                    vet=vet,
+                    diagnosis=diag,
+                    treatment=treat,
+                    condition_after=cond
+                )
+                msg = "Medical record added"
             
             animal.condition = cond
             if gender:
@@ -509,9 +523,12 @@ def vet_add_medical_record(request):
                 animal.age = age
             animal.save()
             
-            messages.success(request, "Medical record added and bio data updated")
+            messages.success(request, f"{msg} and bio data updated")
             return redirect(f'/vet_treatment/?id={aid}')
-        return render(request, 'VET/vet_add_medical_record.html', {'animal': animal})
+        return render(request, 'VET/vet_add_medical_record.html', {
+            'animal': animal,
+            'record': existing_record
+        })
     return redirect('/login/')
 
 def vet_prescribe(request):

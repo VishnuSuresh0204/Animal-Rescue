@@ -13,7 +13,8 @@
                 style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(46, 204, 113, 0.05); color: var(--accent); border-radius: 18px; font-size: 28px; margin-bottom: 20px; border: 1px solid rgba(46, 204, 113, 0.1);">
                 <i class="fas fa-notes-medical"></i>
             </div>
-            <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px;">Clinical Entry
+            <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px;">
+                {% if record %}Update Clinical Entry{% else %}Clinical Entry{% endif %}
             </h2>
             <p style="color: var(--text-secondary); font-size: 16px;">Document objective findings and clinical
                 progression for <strong>{{ animal.species }}</strong>.</p>
@@ -27,7 +28,7 @@
                     FINDINGS</label>
                 <textarea name="diagnosis" required minlength="10" rows="4"
                     placeholder="Enter clinical observations, symptoms, and deduced pathology..."
-                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none; transition: 0.3s;"></textarea>
+                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none; transition: 0.3s;">{{ record.diagnosis|default:'' }}</textarea>
             </div>
 
             <div style="margin-bottom: 30px;">
@@ -36,7 +37,7 @@
                     PROTOCOL</label>
                 <textarea name="treatment" required minlength="10" rows="4"
                     placeholder="Detail the procedures performed and subsequent medical plan..."
-                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none; transition: 0.3s;"></textarea>
+                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none; transition: 0.3s;">{{ record.treatment|default:'' }}</textarea>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 30px;">
@@ -45,9 +46,9 @@
                         style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">GENDER</label>
                     <select name="gender" required
                         style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; appearance: none; cursor: pointer;">
-                        <option value="Male" {% if animal.gender == 'Male' %}selected{% endif %}>Male</option>
-                        <option value="Female" {% if animal.gender == 'Female' %}selected{% endif %}>Female</option>
-                        <option value="Other" {% if animal.gender == 'Other' %}selected{% endif %}>Other / Not Specified
+                        <option value="Male" {% if animal.gender=='Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if animal.gender=='Female' %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if animal.gender=='Other' %}selected{% endif %}>Other / Not Specified
                         </option>
                     </select>
                 </div>
@@ -68,11 +69,18 @@
                 <div style="position: relative;">
                     <select name="condition" required
                         style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; appearance: none; cursor: pointer;">
-                        <option value="Critical">Critical (Immediate danger)</option>
-                        <option value="Serious">Serious (Unstable findings)</option>
-                        <option value="Stable" selected>Stable (Normal parameters)</option>
-                        <option value="Recovering">Recovering (Positive progression)</option>
-                        <option value="Healthy">Healthy (Optimal baseline)</option>
+                        <option value="Critical" {% if record.condition_after=='Critical' or
+                            animal.condition=='Critical' and not record %}selected{% endif %}>Critical (Immediate
+                            danger)</option>
+                        <option value="Serious" {% if record.condition_after=='Serious' or animal.condition=='Serious'
+                            and not record %}selected{% endif %}>Serious (Unstable findings)</option>
+                        <option value="Stable" {% if record.condition_after=='Stable' or animal.condition=='Stable' and
+                            not record %}selected{% endif %}>Stable (Normal parameters)</option>
+                        <option value="Recovering" {% if record.condition_after=='Recovering' or
+                            animal.condition=='Recovering' and not record %}selected{% endif %}>Recovering (Positive
+                            progression)</option>
+                        <option value="Healthy" {% if record.condition_after=='Healthy' or animal.condition=='Healthy'
+                            and not record %}selected{% endif %}>Healthy (Optimal baseline)</option>
                     </select>
                 </div>
             </div>
@@ -84,7 +92,7 @@
                 </a>
                 <button type="submit" class="btn btn-primary"
                     style="flex: 2; padding: 18px; border-radius: 16px; font-weight: 700; box-shadow: 0 10px 25px rgba(46, 204, 113, 0.2);">
-                    Commit to History
+                    {% if record %}Confirm Updates{% else %}Commit to History{% endif %}
                 </button>
             </div>
         </form>
