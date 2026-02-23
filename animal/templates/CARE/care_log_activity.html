@@ -1,6 +1,5 @@
 {% extends 'CARE/base_care.html' %}
 {% block title %}Daily Care Log{% endblock %}
-
 {% block body %}
 <div class="container animate-fade" style="margin-top: 60px;">
     <div
@@ -15,9 +14,7 @@
     </div>
 
     <div style="display: grid; grid-template-columns: minmax(350px, 400px) 1fr; gap: 40px; align-items: start;">
-        <!-- Control Panel & Requirements -->
         <div style="display: flex; flex-direction: column; gap: 30px;">
-            <!-- New Log Form -->
             <div class="card" style="padding: 35px; border-radius: 28px;">
                 <h3
                     style="font-size: 20px; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
@@ -27,30 +24,80 @@
                     {% csrf_token %}
                     <div style="margin-bottom: 24px;">
                         <label
-                            style="display: block; margin-bottom: 10px; color: var(--text-secondary); font-weight: 600; font-size: 13px; letter-spacing: 0.5px;">ACTIVITY
+                            style="display: block; margin-bottom: 10px; color: var(--text-secondary); font-weight: 600; font-size: 13px;">ACTIVITY
                             TYPE</label>
                         <select name="log_type" required
-                            style="width: 100%; padding: 16px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 14px; color: #fff; font-size: 15px; appearance: none; cursor: pointer;">
+                            style="width: 100%; padding: 16px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 14px; color: #fff; font-size: 15px;">
                             <option value="Food">Nutritional Intake (Feeding)</option>
                             <option value="Medicine">Therapeutic Administration (Medication)</option>
                         </select>
                     </div>
                     <div style="margin-bottom: 30px;">
                         <label
-                            style="display: block; margin-bottom: 10px; color: var(--text-secondary); font-weight: 600; font-size: 13px; letter-spacing: 0.5px;">EXECUTION
+                            style="display: block; margin-bottom: 10px; color: var(--text-secondary); font-weight: 600; font-size: 13px;">EXECUTION
                             DETAILS</label>
                         <textarea name="description" required minlength="5" rows="4"
-                            placeholder="e.g. Administered prescribed 5ml dosage at 09:00 AM..."
-                            style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none; transition: 0.3s;"></textarea>
+                            placeholder="e.g. Administered prescribed 5ml dosage..."
+                            style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none;"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary"
-                        style="width: 100%; padding: 18px; border-radius: 16px; font-weight: 700; box-shadow: 0 10px 25px rgba(46, 204, 113, 0.2);">
-                        Commit Log Entry
-                    </button>
+                        style="width: 100%; padding: 18px; border-radius: 16px; font-weight: 700;">Commit Log
+                        Entry</button>
                 </form>
             </div>
 
-            <!-- Clinical Chronology (Medical Status) -->
+            <!-- Active Clinical Directives -->
+            <div class="card"
+                style="padding: 30px; border-radius: 28px; background: rgba(52, 152, 219, 0.05); border: 1px solid rgba(52, 152, 219, 0.1);">
+                <h3
+                    style="font-size: 16px; font-weight: 800; color: #3498db; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-clipboard-check"></i> Active Directives
+                </h3>
+
+                <div style="margin-bottom: 25px;">
+                    <h4
+                        style="font-size: 11px; font-weight: 900; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-pills" style="color: #3498db;"></i> MEDICATION
+                    </h4>
+                    {% for m in meds %}
+                    <div
+                        style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 14px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div style="font-weight: 800; color: #fff; font-size: 14px; margin-bottom: 4px;">
+                            {{m.medicine_name}}
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">
+                            {{m.dosage}} • {{m.frequency}}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p style="font-size: 12px; color: var(--text-secondary); font-style: italic;">No medical directives.
+                    </p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <h4
+                        style="font-size: 11px; font-weight: 900; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-utensils" style="color: #f1c40f;"></i> NUTRITION
+                    </h4>
+                    {% for f in foods %}
+                    <div
+                        style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 14px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div style="font-weight: 800; color: #fff; font-size: 14px; margin-bottom: 4px;">
+                            {{f.food_type}}
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">
+                            {{f.quantity}} • {{f.frequency}}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p style="font-size: 12px; color: var(--text-secondary); font-style: italic;">Standard diet
+                        protocol.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Clinical Chronology -->
             <div style="margin-top: 20px;">
                 <div
                     style="font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
@@ -61,19 +108,23 @@
                     <div
                         style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 15px; border-radius: 16px;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                            <span style="font-size: 11px; font-weight: 800; color: var(--accent);">{{
-                                record.date|date:"Y-m-d" }}</span>
-                            <span style="font-size: 11px; font-weight: 800; color: #fff;">{{ record.condition_after
-                                }}</span>
+                            <span style="font-size: 11px; font-weight: 800; color: var(--accent);">
+                                {{record.date|date:"Y-m-d"}}
+                            </span>
+                            <span style="font-size: 11px; font-weight: 800; color: #fff;">
+                                {{record.condition_after}}
+                            </span>
                         </div>
-                        <div style="font-size: 12px; color: #fff; margin-bottom: 4px; font-weight: 600;">{{
-                            record.diagnosis }}</div>
-                        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.4;">{{
-                            record.treatment }}</div>
+                        <div style="font-size: 12px; color: #fff; margin-bottom: 4px; font-weight: 600;">
+                            {{record.diagnosis}}
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.4;">
+                            {{record.treatment}}
+                        </div>
                     </div>
                     {% empty %}
-                    <p style="font-size: 13px; color: var(--text-secondary); font-style: italic;">No clinical entries
-                        recorded.</p>
+                    <p style="font-size: 13px; color: var(--text-secondary); font-style: italic;">No clinical entries.
+                    </p>
                     {% endfor %}
                 </div>
             </div>
@@ -91,52 +142,41 @@
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 20px; position: relative; padding-left: 30px;">
-                <!-- Vertical timeline line -->
                 <div
                     style="position: absolute; left: 7px; top: 10px; bottom: 10px; width: 1px; background: var(--border);">
                 </div>
-
                 {% for log in logs %}
                 <div style="position: relative;">
-                    <!-- Timeline point -->
                     <div
                         style="position: absolute; left: -26px; top: 18px; width: 7px; height: 7px; border-radius: 50%; background: {% if log.log_type == 'Food' %}#f1c40f{% else %}#3498db{% endif %}; box-shadow: 0 0 10px {% if log.log_type == 'Food' %}#f1c40f{% else %}#3498db{% endif %};">
                     </div>
-
-                    <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 20px 25px; border-radius: 20px; transition: 0.3s;"
-                        onmouseover="this.style.background='rgba(255,255,255,0.03)'"
-                        onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+                    <div
+                        style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 20px 25px; border-radius: 20px;">
                         <div
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                             <span
                                 style="font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: {% if log.log_type == 'Food' %}#f1c40f{% else %}#3498db{% endif %};">
                                 <i class="fas {% if log.log_type == 'Food' %}fa-utensils{% else %}fa-prescription-bottle-alt{% endif %}"
                                     style="margin-right: 6px;"></i>
-                                {{ log.log_type }}
+                                {{log.log_type}}
                             </span>
-                            <span style="font-size: 13px; color: var(--text-secondary); font-family: monospace;">{{
-                                log.given_at|time:"H:i" }}</span>
+                            <span style="font-size: 13px; color: var(--text-secondary);">
+                                {{log.given_at|time:"H:i"}}
+                            </span>
                         </div>
-                        <p style="margin: 0; font-size: 15px; color: #fff; line-height: 1.6;">{{ log.description }}</p>
+                        <p style="margin: 0; font-size: 15px; color: #fff; line-height: 1.6;">
+                            {{log.description}}
+                        </p>
                     </div>
                 </div>
                 {% empty %}
                 <div style="text-align: center; padding: 80px 20px; opacity: 0.3;">
                     <i class="fas fa-calendar-day fa-3x" style="margin-bottom: 20px;"></i>
-                    <p style="font-size: 16px;">No activity recorded in the current cycle.</p>
+                    <p style="font-size: 16px;">No activity recorded.</p>
                 </div>
                 {% endfor %}
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    textarea:focus,
-    select:focus {
-        border-color: var(--accent) !important;
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1);
-    }
-</style>
 {% endblock %}

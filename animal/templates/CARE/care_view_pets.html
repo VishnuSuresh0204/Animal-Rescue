@@ -1,6 +1,5 @@
 {% extends 'CARE/base_care.html' %}
 {% block title %}Resident Pets{% endblock %}
-
 {% block body %}
 <div class="container animate-fade" style="margin-top: 60px;">
     <div
@@ -20,10 +19,7 @@
             style="padding: 0; overflow: hidden; display: flex; flex-direction: column; border-radius: 28px; background: rgba(10, 10, 18, 0.6); backdrop-filter: blur(15px);">
             <div style="height: 240px; position: relative; overflow: hidden; background: #000;">
                 {% if animal.photo %}
-                <img src="{{ animal.photo.url }}"
-                    style="width: 100%; height: 100%; object-fit: cover; transition: 0.7s cubic-bezier(0.4, 0, 0.2, 1);"
-                    onmouseover="this.style.transform='scale(1.1) rotate(1deg)'"
-                    onmouseout="this.style.transform='scale(1) rotate(0deg)'">
+                <img src="{{animal.photo.url}}" style="width: 100%; height: 100%; object-fit: cover;">
                 {% else %}
                 <div
                     style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: var(--text-secondary); opacity: 0.3;">
@@ -34,12 +30,12 @@
                 <div
                     style="position: absolute; top: 20px; right: 20px; display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
                     <span
-                        style="background: rgba(0, 242, 254, 0.15); color: var(--accent); padding: 6px 14px; border-radius: 100px; font-size: 11px; font-weight: 800; border: 1px solid rgba(0, 242, 254, 0.3); backdrop-filter: blur(8px); letter-spacing: 0.5px;">
-                        {{ animal.status|upper }}
+                        style="background: rgba(0, 242, 254, 0.15); color: var(--accent); padding: 6px 14px; border-radius: 100px; font-size: 11px; font-weight: 800; border: 1px solid rgba(0, 242, 254, 0.3); backdrop-filter: blur(8px);">
+                        {{animal.status|upper}}
                     </span>
                     <span
                         style="background: rgba(255, 255, 255, 0.05); color: #fff; padding: 6px 14px; border-radius: 100px; font-size: 10px; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px);">
-                        ID: #{{ animal.id }}
+                        ID: #{{animal.id}}
                     </span>
                 </div>
             </div>
@@ -50,17 +46,17 @@
                         style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
                         <div>
                             <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.5px;">
-                                {{ animal.name|default:animal.species }}
+                                {{animal.name|default:animal.species}}
                             </h3>
                             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                                 <span
                                     style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; background: rgba(255,255,255,0.05); padding: 3px 10px; border-radius: 6px;">
-                                    {{ animal.species }}
+                                    {{animal.species}}
                                 </span>
                                 {% if animal.breed %}
                                 <span
                                     style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; background: rgba(255,255,255,0.05); padding: 3px 10px; border-radius: 6px;">
-                                    {{ animal.breed }}
+                                    {{animal.breed}}
                                 </span>
                                 {% endif %}
                             </div>
@@ -68,7 +64,7 @@
                         <div style="text-align: right;">
                             <div
                                 style="font-size: 11px; font-weight: 800; color: {% if animal.condition == 'Critical' or animal.condition == 'Serious' %}#e74c3c{% elif animal.condition == 'Recovering' or animal.condition == 'Healthy' %}#2ecc71{% else %}#f1c40f{% endif %}; margin-bottom: 4px;">
-                                {{ animal.condition|upper }}
+                                {{animal.condition|upper}}
                             </div>
                             <div style="font-size: 12px; color: var(--text-secondary);">Current Status</div>
                         </div>
@@ -80,40 +76,42 @@
                             <div
                                 style="font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px;">
                                 Gender</div>
-                            <div style="font-size: 14px; font-weight: 600;"><i class="fas fa-venus-mars"
-                                    style="font-size: 12px; color: var(--accent); margin-right: 6px;"></i> {{
-                                animal.gender|default:"Not specified" }}</div>
+                            <div style="font-size: 14px; font-weight: 600;">
+                                <i class="fas fa-venus-mars" style="color:var(--accent);margin-right:6px;"></i>
+                                {{animal.gender|default:"Not specified"}}
+                            </div>
                         </div>
                         <div>
                             <div
                                 style="font-size: 10px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px;">
                                 Age Segment</div>
-                            <div style="font-size: 14px; font-weight: 600;"><i class="fas fa-calendar-alt"
-                                    style="font-size: 12px; color: var(--accent); margin-right: 6px;"></i> {{
-                                animal.age|default:"Unknown" }}</div>
+                            <div style="font-size: 14px; font-weight: 600;">
+                                <i class="fas fa-calendar-alt" style="color:var(--accent);margin-right:6px;"></i>
+                                {{animal.age|default:"Unknown"}}
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
                     <div
-                        style="font-size: 11px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px;">
+                        style="font-size: 11px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 12px;">
                         Attending Specialist</div>
                     <div style="display: flex; align-items: center; gap: 12px;">
                         {% if animal.assigned_vet %}
                         <div
                             style="width: 36px; height: 36px; border-radius: 10px; background: rgba(52, 152, 219, 0.1); display: flex; align-items: center; justify-content: center; color: #3498db;">
-                            <i class="fas fa-user-md"></i>
-                        </div>
+                            <i class="fas fa-user-md"></i></div>
                         <div>
-                            <div style="font-size: 14px; font-weight: 700;">Dr. {{ animal.assigned_vet.name }}</div>
+                            <div style="font-size: 14px; font-weight: 700;">
+                                Dr. {{animal.assigned_vet.name}}
+                            </div>
                             <div style="font-size: 12px; color: var(--text-secondary);">Veterinary Surgeon</div>
                         </div>
                         {% else %}
                         <div
                             style="width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
-                            <i class="fas fa-clock"></i>
-                        </div>
+                            <i class="fas fa-clock"></i></div>
                         <div style="font-size: 13px; color: var(--text-secondary); font-style: italic;">Awaiting
                             Assignment</div>
                         {% endif %}
@@ -121,22 +119,20 @@
                 </div>
 
                 <div style="display: flex; gap: 12px; margin-top: auto;">
-                    <a href="/care_log_activity/?id={{ animal.id }}" class="btn btn-primary"
+                    <a href="/care_log_activity/?id={{animal.id}}" class="btn btn-primary"
                         style="flex: 1; padding: 14px; border-radius: 14px; font-size: 13px;">
                         <i class="fas fa-clipboard-list"></i> Daily Log
                     </a>
-
                     {% if animal.marked_for_adoption_by_vet %}
                     {% if not animal.listed_for_adoption %}
-                    <a href="/care_list_adoption/?id={{ animal.id }}" class="btn btn-outline"
+                    <a href="/care_list_adoption/?id={{animal.id}}" class="btn btn-outline"
                         style="flex: 1; padding: 14px; border-radius: 14px; font-size: 13px; border-color: var(--accent-green); color: var(--accent-green);">
                         <i class="fas fa-heart"></i> List Adoption
                     </a>
                     {% else %}
                     <div
-                        style="flex: 1; display: flex; align-items: center; justify-content: center; background: rgba(46, 204, 113, 0.05); border: 1px solid rgba(46, 204, 113, 0.1); border-radius: 14px; font-size: 12px; color: #2ecc71; font-weight: 800; letter-spacing: 1px;">
-                        PUBLICLY LISTED
-                    </div>
+                        style="flex: 1; display: flex; align-items: center; justify-content: center; background: rgba(46, 204, 113, 0.05); border: 1px solid rgba(46, 204, 113, 0.1); border-radius: 14px; font-size: 12px; color: #2ecc71; font-weight: 800;">
+                        PUBLICLY LISTED</div>
                     {% endif %}
                     {% else %}
                     <div
@@ -153,8 +149,7 @@
             style="grid-column: 1/-1; text-align: center; padding: 100px 20px; background: var(--surface); border-radius: 32px; border: 2px dashed var(--border);">
             <div
                 style="width: 80px; height: 80px; background: rgba(255,255,255,0.03); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 32px; margin: 0 auto 24px;">
-                <i class="fas fa-paw"></i>
-            </div>
+                <i class="fas fa-paw"></i></div>
             <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 12px;">Shelter Vacant</h3>
             <p style="color: var(--text-secondary); font-size: 16px;">There are no animals currently registered in your
                 care center's residency.</p>

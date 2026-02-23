@@ -1,110 +1,206 @@
 {% extends 'VET/base_vet.html' %}
-{% block title %}{% if record %}Update Clinical Entry{% else %}Add Medical Record{% endif %}{% endblock %}
+
+{% block title %}
+    {% if record %}Update Clinical Entry{% else %}Add Medical Record{% endif %}
+{% endblock %}
 
 {% block body %}
 <div class="container animate-fade" style="max-width: 800px; margin-top: 60px;">
     <div class="card" style="padding: 50px; border-radius: 32px; position: relative; overflow: hidden;">
-        <div
-            style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: var(--accent); opacity: 0.03; border-radius: 50%; filter: blur(40px);">
+
+        <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px;
+                    background: var(--accent); opacity: 0.03; border-radius: 50%; filter: blur(40px);">
         </div>
 
         <div style="text-align: center; margin-bottom: 45px;">
-            <div
-                style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: rgba(46, 204, 113, 0.05); color: var(--accent); border-radius: 18px; font-size: 28px; margin-bottom: 20px; border: 1px solid rgba(46, 204, 113, 0.1);">
+            <div style="display: inline-flex; align-items: center; justify-content: center;
+                        width: 64px; height: 64px; background: rgba(46, 204, 113, 0.05);
+                        color: var(--accent); border-radius: 18px; font-size: 28px;
+                        margin-bottom: 20px; border: 1px solid rgba(46, 204, 113, 0.1);">
                 <i class="fas fa-notes-medical"></i>
             </div>
+
             <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px;">
                 {% if record %}Update Clinical Entry{% else %}Clinical Entry{% endif %}
             </h2>
-            <p style="color: var(--text-secondary); font-size: 16px;">Document objective findings and clinical
-                progression for <strong>{{ animal.species }}</strong>.</p>
+
+            <p style="color: var(--text-secondary); font-size: 16px;">
+                Document objective findings and clinical progression for
+                <strong>{{ animal.species }}</strong>.
+            </p>
         </div>
 
         <form method="POST">
             {% csrf_token %}
+
+            <!-- DIAGNOSIS -->
             <div style="margin-bottom: 30px;">
-                <label
-                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">DIAGNOSTIC
-                    FINDINGS</label>
+                <label style="display: block; margin-bottom: 12px; color: var(--text-secondary);
+                              font-weight: 600; font-size: 14px;">
+                    DIAGNOSTIC FINDINGS
+                </label>
+
                 <textarea name="diagnosis" required minlength="10" rows="4"
                     placeholder="Enter clinical observations, symptoms, and deduced pathology..."
-                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none; transition: 0.3s;">{{ record.diagnosis|default:'' }}</textarea>
+                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2);
+                           border: 1px solid var(--border); border-radius: 16px;
+                           color: #fff; font-size: 15px; resize: none;">
+                    {{ record.diagnosis|default:'' }}
+                </textarea>
             </div>
 
+            <!-- TREATMENT -->
             <div style="margin-bottom: 30px;">
-                <label
-                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">TREATMENT
-                    PROTOCOL</label>
+                <label style="display: block; margin-bottom: 12px; color: var(--text-secondary);
+                              font-weight: 600; font-size: 14px;">
+                    TREATMENT PROTOCOL
+                </label>
+
                 <textarea name="treatment" required minlength="10" rows="4"
                     placeholder="Detail the procedures performed and subsequent medical plan..."
-                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none; transition: 0.3s;">{{ record.treatment|default:'' }}</textarea>
+                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2);
+                           border: 1px solid var(--border); border-radius: 16px;
+                           color: #fff; font-size: 15px; resize: none;">
+                    {{ record.treatment|default:'' }}
+                </textarea>
             </div>
 
+            <!-- GENDER + AGE -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 30px;">
+
                 <div>
-                    <label
-                        style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">GENDER</label>
+                    <label style="display: block; margin-bottom: 12px; color: var(--text-secondary);
+                                  font-weight: 600; font-size: 14px;">
+                        GENDER
+                    </label>
+
                     <select name="gender" required
-                        style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; appearance: none; cursor: pointer;">
-                        <option value="Male" {% if animal.gender=='Male' %}selected{% endif %}>Male</option>
-                        <option value="Female" {% if animal.gender=='Female' %}selected{% endif %}>Female</option>
-                        <option value="Other" {% if animal.gender=='Other' %}selected{% endif %}>Other / Not Specified
+                        style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2);
+                               border: 1px solid var(--border); border-radius: 16px;
+                               color: #fff; font-size: 15px;">
+
+                        <option value="Male"
+                            {% if animal.gender == 'Male' %}selected{% endif %}>
+                            Male
                         </option>
+
+                        <option value="Female"
+                            {% if animal.gender == 'Female' %}selected{% endif %}>
+                            Female
+                        </option>
+
+                        <option value="Other"
+                            {% if animal.gender == 'Other' %}selected{% endif %}>
+                            Other / Not Specified
+                        </option>
+
                     </select>
                 </div>
+
                 <div>
-                    <label
-                        style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">AGE
-                        SEGMENT</label>
-                    <input type="text" name="age" value="{{ animal.age|default:'' }}"
+                    <label style="display: block; margin-bottom: 12px; color: var(--text-secondary);
+                                  font-weight: 600; font-size: 14px;">
+                        AGE SEGMENT
+                    </label>
+
+                    <input type="text" name="age"
+                        value="{{ animal.age|default:'' }}"
                         placeholder="e.g. Young, Adult, 2 Years"
-                        style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
+                        style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2);
+                               border: 1px solid var(--border); border-radius: 16px;
+                               color: #fff; font-size: 15px;">
                 </div>
             </div>
 
+            <!-- CONDITION -->
             <div style="margin-bottom: 45px;">
-                <label
-                    style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">POST-OPERATIONAL
-                    STATUS</label>
-                <div style="position: relative;">
-                    <select name="condition" required
-                        style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; appearance: none; cursor: pointer;">
-                        <option value="Critical" {% if record.condition_after=='Critical' or
-                            animal.condition=='Critical' and not record %}selected{% endif %}>Critical (Immediate
-                            danger)</option>
-                        <option value="Serious" {% if record.condition_after=='Serious' or animal.condition=='Serious'
-                            and not record %}selected{% endif %}>Serious (Unstable findings)</option>
-                        <option value="Stable" {% if record.condition_after=='Stable' or animal.condition=='Stable' and
-                            not record %}selected{% endif %}>Stable (Normal parameters)</option>
-                        <option value="Recovering" {% if record.condition_after=='Recovering' or
-                            animal.condition=='Recovering' and not record %}selected{% endif %}>Recovering (Positive
-                            progression)</option>
-                        <option value="Healthy" {% if record.condition_after=='Healthy' or animal.condition=='Healthy'
-                            and not record %}selected{% endif %}>Healthy (Optimal baseline)</option>
-                    </select>
-                </div>
+                <label style="display: block; margin-bottom: 12px; color: var(--text-secondary);
+                              font-weight: 600; font-size: 14px;">
+                    POST-OPERATIONAL STATUS
+                </label>
+
+                <select name="condition" required
+                    style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2);
+                           border: 1px solid var(--border); border-radius: 16px;
+                           color: #fff; font-size: 15px;">
+
+                    <option value="Critical"
+                        {% if record and record.condition_after == 'Critical' %}
+                            selected
+                        {% elif not record and animal.condition == 'Critical' %}
+                            selected
+                        {% endif %}>
+                        Critical (Immediate danger)
+                    </option>
+
+                    <option value="Serious"
+                        {% if record and record.condition_after == 'Serious' %}
+                            selected
+                        {% elif not record and animal.condition == 'Serious' %}
+                            selected
+                        {% endif %}>
+                        Serious (Unstable findings)
+                    </option>
+
+                    <option value="Stable"
+                        {% if record and record.condition_after == 'Stable' %}
+                            selected
+                        {% elif not record and animal.condition == 'Stable' %}
+                            selected
+                        {% endif %}>
+                        Stable (Normal parameters)
+                    </option>
+
+                    <option value="Recovering"
+                        {% if record and record.condition_after == 'Recovering' %}
+                            selected
+                        {% elif not record and animal.condition == 'Recovering' %}
+                            selected
+                        {% endif %}>
+                        Recovering (Positive progression)
+                    </option>
+
+                    <option value="Healthy"
+                        {% if record and record.condition_after == 'Healthy' %}
+                            selected
+                        {% elif not record and animal.condition == 'Healthy' %}
+                            selected
+                        {% endif %}>
+                        Healthy (Optimal baseline)
+                    </option>
+
+                </select>
             </div>
 
+            <!-- BUTTONS -->
             <div style="display: flex; gap: 20px; align-items: center;">
-                <a href="/vet_treatment/?id={{ animal.id }}" class="btn btn-outline"
-                    style="flex: 1; padding: 18px; border-radius: 16px; font-weight: 600;">
+                <a href="/vet_treatment/?id={{ animal.id }}"
+                   class="btn btn-outline"
+                   style="flex: 1; padding: 18px; border-radius: 16px; font-weight: 600;">
                     Discard
                 </a>
-                <button type="submit" class="btn btn-primary"
-                    style="flex: 2; padding: 18px; border-radius: 16px; font-weight: 700; box-shadow: 0 10px 25px rgba(46, 204, 113, 0.2);">
+
+                <button type="submit"
+                        class="btn btn-primary"
+                        style="flex: 2; padding: 18px; border-radius: 16px; font-weight: 700;">
                     {% if record %}Confirm Updates{% else %}Commit to History{% endif %}
                 </button>
             </div>
+
         </form>
     </div>
 </div>
 
 <style>
-    textarea:focus,
-    select:focus {
-        border-color: var(--accent) !important;
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1);
-    }
+textarea:focus,
+select:focus {
+    border-color: var(--accent) !important;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1);
+}
 </style>
+
 {% endblock %}
+
+
+

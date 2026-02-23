@@ -16,8 +16,7 @@
             </div>
             <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px;">Re-assign
                 Medical Lead</h2>
-            <p style="color: var(--text-secondary); font-size: 16px;">Transfer clinical responsibility for subject #{{
-                animal.id }} to a new practitioner.</p>
+            <p style="color: var(--text-secondary); font-size: 16px;">Transfer clinical responsibility for subject #{{ animal.id }} to a new practitioner.</p>
         </div>
 
         <form method="POST">
@@ -44,8 +43,7 @@
                     </div>
                     <p
                         style="color: var(--text-secondary); font-size: 14px; margin: 0; display: flex; align-items: center; gap: 6px;">
-                        <i class="fas fa-user-md" style="color: var(--accent);"></i> Current Lead: {{
-                        animal.assigned_vet.name }}
+                        <i class="fas fa-user-md" style="color: var(--accent);"></i> Current Lead: {{ animal.assigned_vet.name }}
                     </p>
                 </div>
             </div>
@@ -95,3 +93,4 @@
     }
 </style>
 {% endblock %}
+

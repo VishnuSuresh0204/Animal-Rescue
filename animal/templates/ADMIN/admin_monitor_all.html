@@ -133,14 +133,12 @@
                         onmouseover="this.style.background='rgba(255,255,255,0.01)'"
                         onmouseout="this.style.background='transparent'">
                         <td style="padding: 20px 30px; font-weight: 700; color: #fff;">{{ a.species }}</td>
-                        <td style="padding: 20px 30px; font-weight: 600; color: var(--text-secondary);">{{
-                            a.assigned_vet.name }}</td>
+                        <td style="padding: 20px 30px; font-weight: 600; color: var(--text-secondary);">{{ a.assigned_vet.name }}</td>
                         <td style="padding: 20px 30px; color: var(--text-secondary);">{{ a.care_center.name }}</td>
                         <td style="padding: 20px 30px;">
                             <span
                                 style="color: {% if a.condition == 'Healthy' or a.condition == 'Recovering' %}var(--accent){% else %}#e74c3c{% endif %}; font-weight: 700;">
-                                <i class="fas fa-circle" style="font-size: 8px; margin-right: 6px;"></i> {{
-                                a.condition|upper }}
+                                <i class="fas fa-circle" style="font-size: 8px; margin-right: 6px;"></i> {{ a.condition|upper }}
                             </span>
                         </td>
                         <td style="padding: 20px 30px;">
@@ -197,10 +195,8 @@
                         onmouseover="this.style.background='rgba(255,255,255,0.01)'"
                         onmouseout="this.style.background='transparent'">
                         <td style="padding: 20px 30px; font-weight: 700; color: #fff;">{{ req.animal.species }}</td>
-                        <td style="padding: 20px 30px; font-weight: 600; color: var(--text-secondary);">{{ req.user.name
-                            }}</td>
-                        <td style="padding: 20px 30px; color: var(--text-secondary); font-family: monospace;">{{
-                            req.requested_at|date:"Y-m-d H:i" }}</td>
+                        <td style="padding: 20px 30px; font-weight: 600; color: var(--text-secondary);">{{ req.user.name }}</td>
+                        <td style="padding: 20px 30px; color: var(--text-secondary); font-family: monospace;">{{ req.requested_at|date:"Y-m-d H:i" }}</td>
                         <td style="padding: 20px 30px;">
                             <span
                                 style="background: rgba(241, 196, 15, 0.1); color: #f1c40f; padding: 6px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(241, 196, 15, 0.2);">

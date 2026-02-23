@@ -47,8 +47,7 @@
                 <h3 style="font-size: 22px; margin-bottom: 8px; font-weight: 700;">Incident #{{ report.id }}</h3>
                 <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                     <i class="fas fa-user-circle" style="color: var(--text-secondary); font-size: 14px;"></i>
-                    <span style="color: #fff; font-size: 14px; font-weight: 500;">Reported by: {{
-                        report.reported_by.name }}</span>
+                    <span style="color: #fff; font-size: 14px; font-weight: 500;">Reported by: {{ report.reported_by.name }}</span>
                 </div>
                 <p style="color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; font-size: 15px;">
                     {{ report.description|truncatewords:30 }}
@@ -71,8 +70,7 @@
                             style="width: 100%; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 14px; color: #fff; appearance: none; cursor: pointer; font-size: 14px;">
                             <option value="" style="background: var(--surface);">Select Active Team...</option>
                             {% for team in teams %}
-                            <option value="{{ team.id }}" style="background: var(--surface);">{{ team.name }} ({{
-                                team.vehicle }})</option>
+                            <option value="{{ team.id }}" style="background: var(--surface);">{{ team.name }} ({{ team.vehicle }})</option>
                             {% endfor %}
                         </select>
                         <i class="fas fa-chevron-down"

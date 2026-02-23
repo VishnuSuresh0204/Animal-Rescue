@@ -40,8 +40,7 @@
                         onmouseout="this.style.background='rgba(255,255,255,0.02)'">
                         <td style="padding: 20px; border-radius: 14px 0 0 14px; font-weight: 500;">
                             <div style="font-size: 15px; color: #fff;">{{ report.reported_at|date:"M d, Y" }}</div>
-                            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">{{
-                                report.reported_at|time:"H:i" }}</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">{{ report.reported_at|time:"H:i" }}</div>
                         </td>
                         <td style="padding: 20px;">
                             <div style="display: flex; align-items: center; gap: 15px;">
@@ -64,8 +63,7 @@
                         </td>
                         <td style="padding: 20px;">
                             <div style="max-width: 250px;">
-                                <div style="color: #fff; font-size: 14px; margin-bottom: 4px;">{{ report.location_text
-                                    }}</div>
+                                <div style="color: #fff; font-size: 14px; margin-bottom: 4px;">{{ report.location_text }}</div>
                                 <div
                                     style="font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px;">
                                     <i class="fas fa-map-marker-alt" style="color: var(--accent);"></i>
@@ -79,8 +77,7 @@
                                     background: {% if report.status == 'Pending' %}rgba(241, 196, 15, 0.1){% elif report.status == 'Closed' %}rgba(46, 204, 113, 0.1){% elif report.status == 'Assigned' %}rgba(52, 152, 219, 0.1){% else %}rgba(155, 89, 182, 0.1){% endif %}; 
                                     color: {% if report.status == 'Pending' %}#f1c40f{% elif report.status == 'Closed' %}#2ecc71{% elif report.status == 'Assigned' %}#3498db{% else %}#9b59b6{% endif %}; 
                                     border: 1px solid currentColor;">
-                                    {% if report.status == 'AtVet' %}At Medical Center{% else %}{{ report.status }}{%
-                                    endif %}
+                                    {% if report.status == 'AtVet' %}At Medical Center{% else %}{{ report.status }}{% endif %}
                                 </span>
 
                                 {% if report.assigned_team %}
