@@ -54,6 +54,9 @@
                             Assigned Taskforce</th>
                         <th
                             style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Incident Site</th>
+                        <th
+                            style="padding: 20px 30px; font-size: 12px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
                             Deployment Status</th>
                     </tr>
                 </thead>
@@ -74,6 +77,15 @@
                             </div>
                             {% else %}
                             <span style="color: #e74c3c; font-style: italic; font-size: 13px;">Unassigned Agency</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 20px 30px;">
+                            <div style="color: #fff; font-size: 13px; margin-bottom: 4px;">{{ r.location_text }}</div>
+                            {% if r.latitude and r.longitude %}
+                            <a href="https://www.google.com/maps?q={{ r.latitude }},{{ r.longitude }}" target="_blank"
+                                style="color: var(--accent); font-size: 11px; text-decoration: none; font-weight: 700; text-transform: uppercase;">
+                                <i class="fas fa-map-location-dot"></i> View Intelligence
+                            </a>
                             {% endif %}
                         </td>
                         <td style="padding: 20px 30px;">

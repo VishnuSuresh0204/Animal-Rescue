@@ -601,3 +601,81 @@ def care_chat_vet(request):
         vets = Veterinarian.objects.filter(status='Approved')
         return render(request, 'CARE/care_chat_vet.html', {'vets': vets})
     return redirect('/login/')
+
+def admin_report(request):
+    rescued = RescueReport.objects.filter(status__in=['Rescued', 'Closed']).count()
+    treated = MedicalRecord.objects.count()
+    adopted = RescuedAnimal.objects.filter(status='Adopted').count()
+    return render(request, 'ADMIN/admin_report.html', {
+        'rescued': rescued,
+        'treated': treated,
+        'adopted': adopted,
+    })
+
+
+# --- Profile Views ---
+
+def user_profile(request):
+    if 'profile_id' in request.session:
+        profile = UserProfile.objects.get(id=request.session['profile_id'])
+        if request.method == 'POST':
+            profile.name = request.POST.get('name')
+            profile.email = request.POST.get('email')
+            profile.phone = request.POST.get('phone')
+            profile.address = request.POST.get('address')
+            if 'image' in request.FILES:
+                profile.image = request.FILES['image']
+            profile.save()
+            messages.success(request, "Profile updated successfully")
+            return redirect('/user_profile/')
+        return render(request, 'USER/user_profile.html', {'profile': profile})
+    return redirect('/login/')
+
+def rescue_profile(request):
+    if 'profile_id' in request.session:
+        profile = RescueTeam.objects.get(id=request.session['profile_id'])
+        if request.method == 'POST':
+            profile.name = request.POST.get('name')
+            profile.phone = request.POST.get('phone')
+            profile.vehicle = request.POST.get('vehicle')
+            profile.address = request.POST.get('address')
+            if 'image' in request.FILES:
+                profile.image = request.FILES['image']
+            profile.save()
+            messages.success(request, "Profile updated successfully")
+            return redirect('/rescue_profile/')
+        return render(request, 'RESCUE/rescue_profile.html', {'profile': profile})
+    return redirect('/login/')
+
+def vet_profile(request):
+    if 'profile_id' in request.session:
+        profile = Veterinarian.objects.get(id=request.session['profile_id'])
+        if request.method == 'POST':
+            profile.name = request.POST.get('name')
+            profile.phone = request.POST.get('phone')
+            profile.qualification = request.POST.get('qualification')
+            profile.experience = request.POST.get('experience')
+            if 'image' in request.FILES:
+                profile.image = request.FILES['image']
+            profile.save()
+            messages.success(request, "Profile updated successfully")
+            return redirect('/vet_profile/')
+        return render(request, 'VET/vet_profile.html', {'profile': profile})
+    return redirect('/login/')
+
+def care_profile(request):
+    if 'profile_id' in request.session:
+        profile = CareCenter.objects.get(id=request.session['profile_id'])
+        if request.method == 'POST':
+            profile.name = request.POST.get('name')
+            profile.phone = request.POST.get('phone')
+            profile.address = request.POST.get('address')
+            profile.license_number = request.POST.get('license_number')
+            if 'image' in request.FILES:
+                profile.image = request.FILES['image']
+            profile.save()
+            messages.success(request, "Profile updated successfully")
+            return redirect('/care_profile/')
+        return render(request, 'CARE/care_profile.html', {'profile': profile})
+    return redirect('/login/')
+

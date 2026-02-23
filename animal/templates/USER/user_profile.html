@@ -1,0 +1,113 @@
+{% extends 'USER/base_user.html' %}
+{% block title %}My Profile{% endblock %}
+
+{% block body %}
+<div class="container animate-fade" style="margin-top: 60px;">
+    <div style="max-width: 800px; margin: 0 auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <div>
+                <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 8px;">My Profile</h2>
+                <p style="color: var(--text-secondary);">Manage your personal information and preferences.</p>
+            </div>
+            <a href="/user_home/" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Dashboard
+            </a>
+        </div>
+
+        <form action="/user_profile/" method="POST" enctype="multipart/form-data" class="card" style="padding: 40px;">
+            {% csrf_token %}
+
+            <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap;">
+                <!-- Avatar Section -->
+                <div style="flex: 0 0 200px; text-align: center;">
+                    <div style="position: relative; width: 200px; height: 200px; margin-bottom: 20px;">
+                        {% if profile.image %}
+                        <img src="{{ profile.image.url }}" id="image-preview"
+                            style="width: 100%; height: 100%; border-radius: 20px; object-fit: cover; border: 2px solid var(--glass-border);">
+                        {% else %}
+                        <div id="image-placeholder"
+                            style="width: 100%; height: 100%; background: rgba(255,255,255,0.03); border-radius: 20px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); border: 2px dashed var(--glass-border);">
+                            <i class="fas fa-user-circle fa-5x"></i>
+                        </div>
+                        {% endif %}
+                        <label for="image"
+                            style="position: absolute; bottom: -10px; right: -10px; width: 44px; height: 44px; background: var(--accent); color: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 4px solid var(--surface); transition: 0.3s;"
+                            onmouseover="this.style.transform='scale(1.1)'"
+                            onmouseout="this.style.transform='scale(1)'">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" name="image" id="image" style="display: none;" onchange="previewImage(this)">
+                    </div>
+                    <p style="font-size: 13px; color: var(--text-secondary);">Click camera to change</p>
+                </div>
+
+                <!-- Form Fields -->
+                <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 24px;">
+                    <div class="input-group">
+                        <label
+                            style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; text-transform: uppercase;">Full
+                            Name</label>
+                        <input type="text" name="name" value="{{ profile.name }}" required
+                            style="width: 100%; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 14px; color: #fff;">
+                    </div>
+
+                    <div class="input-group">
+                        <label
+                            style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; text-transform: uppercase;">Email
+                            Address</label>
+                        <input type="email" name="email" value="{{ profile.email }}" required
+                            style="width: 100%; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 14px; color: #fff;">
+                    </div>
+
+                    <div class="input-group">
+                        <label
+                            style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; text-transform: uppercase;">Phone
+                            Number</label>
+                        <input type="text" name="phone" value="{{ profile.phone }}" required
+                            style="width: 100%; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 14px; color: #fff;">
+                    </div>
+
+                    <div class="input-group">
+                        <label
+                            style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; text-transform: uppercase;">Residence
+                            Address</label>
+                        <textarea name="address" required rows="3"
+                            style="width: 100%; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 14px; color: #fff; resize: none;">{{ profile.address }}</textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="height: 54px; margin-top: 10px;">
+                        Save Profile Changes
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const preview = document.getElementById('image-preview');
+                const placeholder = document.getElementById('image-placeholder');
+
+                if (preview) {
+                    preview.src = e.target.result;
+                } else if (placeholder) {
+                    const img = document.createElement('img');
+                    img.id = 'image-preview';
+                    img.src = e.target.result;
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.borderRadius = '20px';
+                    img.style.objectFit = 'cover';
+                    img.style.border = '2px solid var(--glass-border)';
+                    placeholder.parentNode.replaceChild(img, placeholder);
+                }
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+{% endblock %}

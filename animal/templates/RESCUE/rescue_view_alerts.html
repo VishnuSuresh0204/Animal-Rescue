@@ -46,13 +46,16 @@
                     </span>
                 </div>
                 <h3 style="font-size: 22px; margin-bottom: 12px; font-weight: 700;">Mission #{{ report.id }}</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; font-size: 15px;">{{
-                    report.description }}</p>
+                <p style="color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; font-size: 15px;">
+                    {{ report.description }}
+                </p>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 14px;">
-                    <p style="color: #e74c3c; font-weight: 500;"><i class="fas fa-map-marker-alt"
-                            style="margin-right: 8px;"></i> {{ report.location_text }}</p>
-                    <p style="color: var(--text-secondary);"><i class="fas fa-user" style="margin-right: 8px;"></i> {{
-                        report.reported_by.name }}</p>
+                    <p style="color: #e74c3c; font-weight: 500;">
+                        <i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i> {{ report.location_text }}
+                    </p>
+                    <p style="color: var(--text-secondary);">
+                        <i class="fas fa-user" style="margin-right: 8px;"></i> {{ report.reported_by.name }}
+                    </p>
                 </div>
             </div>
 
@@ -102,5 +105,4 @@
         {% endfor %}
     </div>
 </div>
-{% endblock %}
 {% endblock %}
