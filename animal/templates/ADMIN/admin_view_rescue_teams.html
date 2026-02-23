@@ -58,10 +58,16 @@
                             {% elif team.status == 'Pending' %}
                             <span
                                 style="background: rgba(241, 196, 15, 0.1); color: #f1c40f; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(241, 196, 15, 0.2);">VERIFYING</span>
+                            {% elif team.status == 'Blocked' %}
+                            <span
+                                style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(231, 76, 60, 0.2);">BLOCKED</span>
+                            {% elif team.status == 'Rejected' %}
+                            <span
+                                style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(231, 76, 60, 0.2);">REJECTED</span>
                             {% else %}
                             <span
-                                style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(231, 76, 60, 0.2);">{{
-                                team.status|upper }}</span>
+                                style="background: rgba(150,150,150,0.1); color: #aaa; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700;">{{
+                                team.status }}</span>
                             {% endif %}
                         </td>
                         <td style="padding: 20px; border-radius: 0 14px 14px 0;">

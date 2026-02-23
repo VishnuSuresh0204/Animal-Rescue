@@ -25,7 +25,6 @@
             </div>
             <h3 style="font-size: 22px; font-weight: 700;">Rescue Squads</h3>
         </div>
-
         <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: separate; border-spacing: 0 12px; text-align: left;">
                 <thead>
@@ -61,10 +60,12 @@
                             {% elif team.status == 'Pending' %}
                             <span
                                 style="background: rgba(241, 196, 15, 0.1); color: #f1c40f; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(241, 196, 15, 0.2);">VERIFYING</span>
+                            {% elif team.status == 'Blocked' %}
+                            <span
+                                style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(231, 76, 60, 0.2);">BLOCKED</span>
                             {% else %}
                             <span
-                                style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(231, 76, 60, 0.2);">{{
-                                team.status|upper }}</span>
+                                style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(231, 76, 60, 0.2);">REJECTED</span>
                             {% endif %}
                         </td>
                         <td style="padding: 20px; border-radius: 0 14px 14px 0;">
@@ -75,7 +76,6 @@
                                 <a href="/admin_reject_team/?id={{ team.id }}" class="btn btn-outline"
                                     style="padding: 8px 16px; font-size: 12px; border-radius: 10px; color: #e74c3c;">Deny</a>
                                 {% endif %}
-
                                 {% if team.user.is_active %}
                                 <a href="/admin_block_user/?id={{ team.user.id }}" class="btn btn-outline"
                                     style="padding: 8px 16px; font-size: 12px; border-radius: 10px; color: #e74c3c;">Deactivate</a>
@@ -101,7 +101,6 @@
             </div>
             <h3 style="font-size: 22px; font-weight: 700;">Certified Practitioners</h3>
         </div>
-
         <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: separate; border-spacing: 0 12px; text-align: left;">
                 <thead>
@@ -138,19 +137,22 @@
                             {% elif vet.status == 'Pending' %}
                             <span
                                 style="background: rgba(241, 196, 15, 0.1); color: #f1c40f; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(241, 196, 15, 0.2);">VERIFYING</span>
+                            {% elif vet.status == 'Blocked' %}
+                            <span
+                                style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(231, 76, 60, 0.2);">BLOCKED</span>
                             {% else %}
                             <span
-                                style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(231, 76, 60, 0.2);">{{
-                                vet.status|upper }}</span>
+                                style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(231, 76, 60, 0.2);">REJECTED</span>
                             {% endif %}
                         </td>
                         <td style="padding: 20px; border-radius: 0 14px 14px 0;">
                             <div style="display: flex; gap: 8px;">
                                 {% if vet.status == 'Pending' %}
-                                <a href="/admin_approve_team/?id={{ vet.id }}" class="btn btn-primary"
+                                <a href="/admin_approve_vet/?id={{ vet.id }}" class="btn btn-primary"
                                     style="padding: 8px 16px; font-size: 12px; border-radius: 10px;">Authorize</a>
+                                <a href="/admin_reject_vet/?id={{ vet.id }}" class="btn btn-outline"
+                                    style="padding: 8px 16px; font-size: 12px; border-radius: 10px; color: #e74c3c;">Decline</a>
                                 {% endif %}
-
                                 {% if vet.user.is_active %}
                                 <a href="/admin_block_user/?id={{ vet.user.id }}" class="btn btn-outline"
                                     style="padding: 8px 16px; font-size: 12px; border-radius: 10px; color: #e74c3c;">Deactivate</a>
@@ -176,7 +178,6 @@
             </div>
             <h3 style="font-size: 22px; font-weight: 700;">Registered Citizens</h3>
         </div>
-
         <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: separate; border-spacing: 0 12px; text-align: left;">
                 <thead>
