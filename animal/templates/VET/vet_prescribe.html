@@ -27,9 +27,9 @@
                     CATEGORY</label>
                 <select name="type" id="p_type" onchange="toggleFields()" required
                     style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; appearance: none; cursor: pointer;">
-                    <option value="Medicine" {% if request.GET.type=='Medicine' %}selected{% endif %}>Pharmaceutical /
+                    <option value="Medicine" {% if request.GET.type == 'Medicine' %}selected{% endif %}>Pharmaceutical /
                         Therapeutic</option>
-                    <option value="Food" {% if request.GET.type=='Food' %}selected{% endif %}>Nutritional / Dietary /
+                    <option value="Food" {% if request.GET.type == 'Food' %}selected{% endif %}>Nutritional / Dietary /
                         Supplements</option>
                 </select>
             </div>
