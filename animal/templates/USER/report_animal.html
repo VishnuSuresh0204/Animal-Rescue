@@ -55,63 +55,10 @@
                 style="width: 100%; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 14px; color: #fff;">
         </div>
 
-        <div
-            style="background: rgba(46, 204, 113, 0.03); border: 1px solid rgba(46, 204, 113, 0.1); border-radius: 18px; padding: 24px; margin-bottom: 40px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h4 style="font-size: 16px; font-weight: 700; color: var(--accent);">Precise Coordinates</h4>
-                <button type="button" onclick="getLocation()" class="btn btn-outline"
-                    style="padding: 8px 16px; font-size: 13px;">
-                    <i class="fas fa-crosshairs"></i> Get Current Position
-                </button>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <input type="text" name="lat" id="lat" placeholder="Latitude" readonly
-                    style="padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; font-family: monospace;">
-                <input type="text" name="lon" id="lon" placeholder="Longitude" readonly
-                    style="padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; font-family: monospace;">
-            </div>
-        </div>
-
         <button type="submit" class="btn btn-primary"
-            style="width: 100%; padding: 18px; font-size: 18px; letter-spacing: 0.5px;">
+            style="width: 100%; padding: 18px; font-size: 18px; letter-spacing: 0.5px; margin-top: 20px;">
             <i class="fas fa-paper-plane"></i> Dispatch Rescue Team
         </button>
     </form>
 </div>
-
-<script>
-    function getLocation() {
-        if (navigator.geolocation) {
-            Swal.fire({
-                title: 'Detecting...',
-                text: 'Calculating your precise coordinates.',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
-            });
-            navigator.geolocation.getCurrentPosition(function (position) {
-                document.getElementById('lat').value = position.coords.latitude;
-                document.getElementById('lon').value = position.coords.longitude;
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Located',
-                    text: 'Co-ordinates updated successfully.',
-                    timer: 1500,
-                    showConfirmButton: false,
-                    background: '#131520',
-                    color: '#fff'
-                });
-            }, function () {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Failed',
-                    text: 'Could not access location. Please enter coordinates manually.',
-                    background: '#131520',
-                    color: '#fff'
-                });
-            });
-        } else {
-            Swal.fire('Error', 'Geolocation is not supported by this browser.', 'error');
-        }
-    }
-</script>
 {% endblock %}

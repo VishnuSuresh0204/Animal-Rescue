@@ -354,8 +354,6 @@ def user_report_animal(request):
             category = request.POST.get('animal_type')
             desc = request.POST.get('description')
             loc = request.POST.get('location')
-            lat = request.POST.get('lat')
-            lon = request.POST.get('lon')
             img = request.FILES.get('image')
             profile = UserProfile.objects.get(id=request.session['profile_id'])
             
@@ -364,8 +362,6 @@ def user_report_animal(request):
                 animal_type=category,
                 description=desc,
                 location_text=loc,
-                latitude=lat,
-                longitude=lon,
                 photo=img
             )
             messages.success(request, "Report submitted.")

@@ -90,8 +90,6 @@ class RescueReport(models.Model):
     description = models.TextField()
     animal_type = models.CharField(max_length=50, null=True)  # dog, cat, etc.
     location_text = models.CharField(max_length=300, null=True)
-    latitude = models.CharField(max_length=50, null=True, blank=True)
-    longitude = models.CharField(max_length=50, null=True, blank=True)
     photo = models.ImageField(upload_to='rescue_reports/', null=True, blank=True)
     reported_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
