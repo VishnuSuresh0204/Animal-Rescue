@@ -491,6 +491,8 @@ def vet_add_medical_record(request):
             diag = request.POST.get('diagnosis')
             treat = request.POST.get('treatment')
             cond = request.POST.get('condition')
+            gender = request.POST.get('gender')
+            age = request.POST.get('age')
             
             MedicalRecord.objects.create(
                 animal=animal,
@@ -501,9 +503,13 @@ def vet_add_medical_record(request):
             )
             
             animal.condition = cond
+            if gender:
+                animal.gender = gender
+            if age:
+                animal.age = age
             animal.save()
             
-            messages.success(request, "Medical record added")
+            messages.success(request, "Medical record added and bio data updated")
             return redirect(f'/vet_treatment/?id={aid}')
         return render(request, 'VET/vet_add_medical_record.html', {'animal': animal})
     return redirect('/login/')

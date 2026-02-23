@@ -39,6 +39,28 @@
                     style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; resize: none; transition: 0.3s;"></textarea>
             </div>
 
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 30px;">
+                <div>
+                    <label
+                        style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">GENDER</label>
+                    <select name="gender" required
+                        style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px; appearance: none; cursor: pointer;">
+                        <option value="Male" {% if animal.gender=='Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if animal.gender=='Female' %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if animal.gender=='Other' %}selected{% endif %}>Other / Not Specified
+                        </option>
+                    </select>
+                </div>
+                <div>
+                    <label
+                        style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">AGE
+                        SEGMENT</label>
+                    <input type="text" name="age" value="{{ animal.age|default:'' }}"
+                        placeholder="e.g. Young, Adult, 2 Years"
+                        style="width: 100%; padding: 18px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 15px;">
+                </div>
+            </div>
+
             <div style="margin-bottom: 45px;">
                 <label
                     style="display: block; margin-bottom: 12px; color: var(--text-secondary); font-weight: 600; font-size: 14px; letter-spacing: 0.5px;">POST-OPERATIONAL
