@@ -151,6 +151,18 @@ def admin_manage_users(request):
     users = UserProfile.objects.all()
     return render(request, 'ADMIN/admin_manage_users.html', {'vets': vets, 'teams': teams, 'users': users})
 
+def admin_view_rescue_teams(request):
+    teams = RescueTeam.objects.all()
+    return render(request, 'ADMIN/admin_view_rescue_teams.html', {'teams': teams})
+
+def admin_view_vets(request):
+    vets = Veterinarian.objects.all()
+    return render(request, 'ADMIN/admin_view_vets.html', {'vets': vets})
+
+def admin_view_users(request):
+    users = UserProfile.objects.all()
+    return render(request, 'ADMIN/admin_view_users.html', {'users': users})
+
 def admin_approve_team(request):
     tid = request.GET.get('id')
     team = RescueTeam.objects.filter(id=tid).first()
@@ -175,7 +187,13 @@ def admin_block_user(request):
     if user:
         user.is_active = False
         user.save()
-        messages.info(request, f"Blocked {user.username}")
+        messages.info(request, f"Blocked account for {user.username}")
+    
+    # Redirect back to referring page or default
+    referer = request.META.get('HTTP_REFERER')
+    valid_referers = ['admin_manage_users', 'admin_manage_care_centers', 'admin_view_rescue_teams', 'admin_view_vets', 'admin_view_users']
+    if referer and any(ref in referer for ref in valid_referers):
+        return redirect(referer)
     return redirect('/admin_manage_users/')
 
 def admin_unblock_user(request):
@@ -184,7 +202,13 @@ def admin_unblock_user(request):
     if user:
         user.is_active = True
         user.save()
-        messages.success(request, f"Unblocked {user.username}")
+        messages.success(request, f"Activated account for {user.username}")
+    
+    # Redirect back to referring page or default
+    referer = request.META.get('HTTP_REFERER')
+    valid_referers = ['admin_manage_users', 'admin_manage_care_centers', 'admin_view_rescue_teams', 'admin_view_vets', 'admin_view_users']
+    if referer and any(ref in referer for ref in valid_referers):
+        return redirect(referer)
     return redirect('/admin_manage_users/')
 
 def admin_manage_care_centers(request):
@@ -193,7 +217,15 @@ def admin_manage_care_centers(request):
 
 def admin_add_care_center(request):
     if request.method == 'POST':
-        # ... (logic remains same)
+        u = request.POST.get('username')
+        p = request.POST.get('password')
+        n = request.POST.get('name')
+        e = request.POST.get('email')
+        ph = request.POST.get('phone')
+        ad = request.POST.get('address')
+        li = request.POST.get('license')
+        img = request.FILES.get('image')
+        
         user = Login.objects.create_user(username=u, password=p, usertype='careCenter', view_password=p)
         CareCenter.objects.create(user=user, name=n, email=e, phone=ph, address=ad, license_number=li, image=img, status='Approved')
         messages.success(request, "Care Center added successfully")
@@ -204,7 +236,13 @@ def admin_edit_care_center(request):
     cid = request.GET.get('id')
     center = CareCenter.objects.get(id=cid)
     if request.method == 'POST':
-        # ... (logic remains same)
+        center.name = request.POST.get('name')
+        center.email = request.POST.get('email')
+        center.phone = request.POST.get('phone')
+        center.address = request.POST.get('address')
+        center.license_number = request.POST.get('license')
+        if request.FILES.get('image'):
+            center.image = request.FILES.get('image')
         center.save()
         messages.success(request, "Care Center updated")
         return redirect('/admin_manage_care_centers/')
@@ -258,7 +296,23 @@ def user_home(request):
 def user_report_animal(request):
     if 'profile_id' in request.session:
         if request.method == 'POST':
-            # ... (logic remains same)
+            category = request.POST.get('animal_type')
+            desc = request.POST.get('description')
+            loc = request.POST.get('location')
+            lat = request.POST.get('lat')
+            lon = request.POST.get('lon')
+            img = request.FILES.get('image')
+            profile = UserProfile.objects.get(id=request.session['profile_id'])
+            
+            RescueReport.objects.create(
+                reported_by=profile,
+                animal_type=category,
+                description=desc,
+                location_text=loc,
+                latitude=lat,
+                longitude=lon,
+                photo=img
+            )
             messages.success(request, "Report submitted.")
             return redirect('/user_home/')
         return render(request, 'USER/report_animal.html')
@@ -320,7 +374,25 @@ def rescue_transport(request):
     vets = Veterinarian.objects.filter(status='Approved')
     centers = CareCenter.objects.filter(status='Approved')
     if request.method == 'POST':
-        # ... (logic remains same)
+        v_id = request.POST.get('vet')
+        c_id = request.POST.get('care')
+        
+        vet = Veterinarian.objects.get(id=v_id)
+        center = CareCenter.objects.get(id=c_id)
+        
+        # Create RescuedAnimal record
+        RescuedAnimal.objects.create(
+            rescue_report=report,
+            species=report.animal_type,
+            photo=report.photo,
+            assigned_vet=vet,
+            care_center=center,
+            status='UnderTreatment'
+        )
+        
+        report.status = 'AtVet'
+        report.save()
+        
         messages.success(request, "Animal transported.")
         return redirect('/rescue_view_alerts/')
     return render(request, 'RESCUE/rescue_transport.html', {'report': report, 'vets': vets, 'centers': centers})
@@ -348,7 +420,21 @@ def vet_add_medical_record(request):
         animal = RescuedAnimal.objects.get(id=aid)
         vet = Veterinarian.objects.get(id=request.session['profile_id'])
         if request.method == 'POST':
-            # ... (logic remains same)
+            diag = request.POST.get('diagnosis')
+            treat = request.POST.get('treatment')
+            cond = request.POST.get('condition')
+            
+            MedicalRecord.objects.create(
+                animal=animal,
+                vet=vet,
+                diagnosis=diag,
+                treatment=treat,
+                condition_after=cond
+            )
+            
+            animal.condition = cond
+            animal.save()
+            
             messages.success(request, "Medical record added")
             return redirect(f'/vet_treatment/?id={aid}')
         return render(request, 'VET/vet_add_medical_record.html', {'animal': animal})
@@ -360,7 +446,31 @@ def vet_prescribe(request):
         animal = RescuedAnimal.objects.get(id=aid)
         vet = Veterinarian.objects.get(id=request.session['profile_id'])
         if request.method == 'POST':
-            # ... (logic remains same)
+            ptype = request.POST.get('type')
+            item = request.POST.get('item')
+            freq = request.POST.get('freq')
+            
+            if ptype == 'Medicine':
+                dos = request.POST.get('dosage')
+                dur = request.POST.get('duration')
+                PrescribedMedicine.objects.create(
+                    animal=animal,
+                    vet=vet,
+                    medicine_name=item,
+                    dosage=dos,
+                    frequency=freq,
+                    duration=dur
+                )
+            else:
+                qty = request.POST.get('quantity')
+                PrescribedFood.objects.create(
+                    animal=animal,
+                    vet=vet,
+                    food_type=item,
+                    quantity=qty,
+                    frequency=freq
+                )
+            
             messages.success(request, f"{ptype} prescribed")
             return redirect(f'/vet_treatment/?id={aid}')
         return render(request, 'VET/vet_prescribe.html', {'animal': animal})
@@ -393,7 +503,18 @@ def care_log_activity(request):
         animal = RescuedAnimal.objects.get(id=aid)
         center = CareCenter.objects.get(id=request.session['profile_id'])
         if request.method == 'POST':
-            # ... (logic remains same)
+            ltype = request.POST.get('log_type')
+            desc = request.POST.get('description')
+            
+            from datetime import date
+            CareLog.objects.create(
+                animal=animal,
+                care_center=center,
+                log_type=ltype,
+                description=desc,
+                date=date.today()
+            )
+            
             messages.success(request, f"{ltype} log added")
             return redirect('/care_view_pets/')
         meds = animal.medicines.all()
@@ -418,8 +539,10 @@ def care_chat_vet(request):
     if 'profile_id' in request.session:
         center = CareCenter.objects.get(id=request.session['profile_id'])
         if request.method == 'POST':
-            # ... (logic remains same)
+            v_id = request.POST.get('vet_id')
+            msg = request.POST.get('message')
             Chat.objects.create(care_center=center, vet_id=v_id, sender_type='care', message=msg)
+            messages.success(request, "Message sent")
         vets = Veterinarian.objects.filter(status='Approved')
         return render(request, 'CARE/care_chat_vet.html', {'vets': vets})
     return redirect('/login/')

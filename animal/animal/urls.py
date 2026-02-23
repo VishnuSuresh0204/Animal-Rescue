@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from myapp import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,6 +38,9 @@ urlpatterns = [
 
     # Admin actions
     path('admin_manage_users/', views.admin_manage_users),
+    path('admin_view_rescue_teams/', views.admin_view_rescue_teams),
+    path('admin_view_vets/', views.admin_view_vets),
+    path('admin_view_users/', views.admin_view_users),
     path('admin_approve_team/', views.admin_approve_team),
     path('admin_reject_team/', views.admin_reject_team),
     path('admin_block_user/', views.admin_block_user),
@@ -74,4 +79,4 @@ urlpatterns = [
     path('care_log_activity/', views.care_log_activity),
     path('care_list_adoption/', views.care_list_adoption),
     path('care_chat_vet/', views.care_chat_vet),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

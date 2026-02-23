@@ -1,0 +1,87 @@
+{% extends 'ADMIN/base_admin.html' %}
+{% block title %}Manage Registered Citizens{% endblock %}
+
+{% block body %}
+<div class="container animate-fade" style="margin-top: 60px;">
+    <div
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; flex-wrap: wrap; gap: 20px;">
+        <div>
+            <h2 style="font-size: clamp(28px, 4vw, 36px); font-weight: 800; margin-bottom: 8px;">Registered Citizens
+            </h2>
+            <p style="color: var(--text-secondary);">Manage community members and reporting access.</p>
+        </div>
+        <a href="/admin_home/" class="btn btn-outline" style="padding: 12px 24px;">
+            <i class="fas fa-arrow-left"></i> Command Center
+        </a>
+    </div>
+
+    <div class="card" style="padding: 40px;">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px;">
+            <div class="feature-icon"
+                style="background: rgba(155, 89, 182, 0.05); color: #9b59b6; margin-bottom: 0; width: 48px; height: 48px; border-radius: 12px; font-size: 20px;">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3 style="font-size: 22px; font-weight: 700;">Community Directory</h3>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: separate; border-spacing: 0 12px; text-align: left;">
+                <thead>
+                    <tr>
+                        <th
+                            style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                            Member</th>
+                        <th
+                            style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                            Contact</th>
+                        <th
+                            style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                            Account Status</th>
+                        <th
+                            style="padding: 0 20px 10px; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                            Protocols</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr style="background: rgba(255,255,255,0.02); transition: 0.3s;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.04)'"
+                        onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+                        <td style="padding: 20px; border-radius: 14px 0 0 14px; font-weight: 600;">{{ u.name }}</td>
+                        <td style="padding: 20px;">
+                            <div style="color: #fff; font-size: 14px;">{{ u.email }}</div>
+                            <div style="color: var(--text-secondary); font-size: 13px;">{{ u.phone }}</div>
+                        </td>
+                        <td style="padding: 20px;">
+                            {% if u.user.is_active %}
+                            <span
+                                style="background: rgba(46, 204, 113, 0.1); color: var(--accent); padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(46, 204, 113, 0.2);">ACTIVE</span>
+                            {% else %}
+                            <span
+                                style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid rgba(231, 76, 60, 0.2);">SUSPENDED</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 20px; border-radius: 0 14px 14px 0;">
+                            <div style="display: flex; gap: 8px;">
+                                {% if u.user.is_active %}
+                                <a href="/admin_block_user/?id={{ u.user.id }}" class="btn btn-outline"
+                                    style="padding: 8px 16px; font-size: 12px; border-radius: 10px; color: #e74c3c;">Deactivate</a>
+                                {% else %}
+                                <a href="/admin_unblock_user/?id={{ u.user.id }}" class="btn btn-primary"
+                                    style="padding: 8px 16px; font-size: 12px; border-radius: 10px;">Activate</a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 50px; color: var(--text-secondary);">No
+                            citizens registered yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
