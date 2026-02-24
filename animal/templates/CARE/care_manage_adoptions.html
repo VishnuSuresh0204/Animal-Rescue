@@ -38,12 +38,16 @@
                         <h3 style="font-size:20px;font-weight:700;margin-bottom:4px;">
                             {{ req.animal.name|default:req.animal.species }}
                         </h3>
-                        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">Request by:
-                            <strong style="color:#fff;">
+                        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">Request by:
+                            <strong style="color: #fff;">
                                 {{ req.user.name }}
                             </strong> (
                             {{ req.user.user.email }}
                             )
+                            <a href="/care_view_user_details/?id=
+{{ req.user.id }}
+" style="color:var(--accent);text-decoration:none;margin-left:10px;font-weight:700;font-size:11px;text-transform:uppercase;">View
+                                Profile <i class="fas fa-external-link-alt" style="font-size:9px;"></i></a>
                         </div>
                         <div style="display:flex;gap:10px;align-items:center;">
                             <span

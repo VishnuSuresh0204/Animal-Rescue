@@ -711,6 +711,13 @@ def care_update_photo(request):
         return redirect('/care_view_pets/')
     return redirect('/login/')
 
+def care_view_user_details(request):
+    if 'profile_id' in request.session:
+        uid = request.GET.get('id')
+        user_profile = UserProfile.objects.get(id=uid)
+        return render(request, 'CARE/care_view_user.html', {'applicant': user_profile})
+    return redirect('/login/')
+
 def care_list_adoption(request):
     aid = request.GET.get('id')
     animal = RescuedAnimal.objects.filter(id=aid).first()

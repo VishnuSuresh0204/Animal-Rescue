@@ -1,0 +1,83 @@
+{% extends 'CARE/base_care.html' %}
+{% block title %}Applicant Profile{% endblock %}
+{% block body %}
+<div class="container animate-fade" style="margin-top:60px;">
+    <div
+        style="display:flex;justify-content:space-between;align-items:center;margin-bottom:50px;flex-wrap:wrap;gap:20px;">
+        <div>
+            <h2 style="font-size:clamp(28px,4vw,36px);font-weight:800;margin-bottom:8px;">Applicant Verification</h2>
+            <p style="color:var(--text-secondary);">Individual profile details for adoption candidacy review.</p>
+        </div>
+        <a href="/care_manage_adoptions/" class="btn btn-outline" style="padding:12px 24px;"><i
+                class="fas fa-arrow-left"></i> Back to Requests</a>
+    </div>
+
+    <div style="max-width:800px;margin:0 auto;">
+        <div class="card"
+            style="padding:50px;border-radius:32px;background:rgba(0,0,0,0.2);border:1px solid var(--border);">
+            <div style="display:flex;gap:40px;align-items:center;flex-wrap:wrap;">
+                <div
+                    style="width:180px;height:180px;border-radius:40px;overflow:hidden;background:#000;border:4px solid rgba(255,255,255,0.05);">
+                    {% if applicant.image %}
+                    <img src="
+{{ applicant.image.url }}
+" style="width:100%;height:100%;object-fit:cover;">
+                    {% else %}
+                    <div
+                        style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;opacity:0.2;font-size:60px;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div style="flex:1;">
+                    <h3 style="font-size:32px;font-weight:900;margin-bottom:12px;letter-spacing:-1px;">
+                        {{ applicant.name }}
+                    </h3>
+                    <div style="display:flex;flex-direction:column;gap:15px;">
+                        <div style="display:flex;align-items:center;gap:12px;color:var(--text-secondary);">
+                            <div
+                                style="width:36px;height:36px;background:rgba(255,255,255,0.03);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--accent);">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <span style="font-size:16px;">
+                                {{ applicant.email }}
+                            </span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;color:var(--text-secondary);">
+                            <div
+                                style="width:36px;height:36px;background:rgba(255,255,255,0.03);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--accent);">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <span style="font-size:16px;">
+                                {{ applicant.phone|default:"Not provided" }}
+                            </span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;color:var(--text-secondary);">
+                            <div
+                                style="width:36px;height:36px;background:rgba(255,255,255,0.03);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--accent);">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <span style="font-size:16px;">
+                                {{ applicant.address|default:"Not provided" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:50px;padding-top:40px;border-top:1px solid var(--border);">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;color:var(--text-secondary);">
+                    <i class="fas fa-shield-alt"></i>
+                    <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;">Security &
+                        Verification</span>
+                </div>
+                <p style="color:var(--text-secondary);font-size:14px;line-height:1.6;">
+                    This profile information is verified through the RescueSystem portal. User has completed the
+                    standard registration process and is currently in good standing for adoption requests.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
