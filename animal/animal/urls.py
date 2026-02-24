@@ -63,6 +63,7 @@ urlpatterns = [
     path('user_request_adoption/', views.user_request_adoption),
     path('user_submit_adoption/', views.user_submit_adoption),
     path('user_animal_detail/', views.user_animal_detail),
+    path('user_cancel_adoption/', views.user_cancel_adoption),
     path('user_profile/', views.user_profile),
 
     # Rescue Team actions

@@ -12,6 +12,22 @@
         <a href="/user_home/" class="btn btn-outline" style="padding:12px 24px;"><i class="fas fa-arrow-left"></i> Home
             Dashboard</a>
     </div>
+
+    {% if messages %}
+    <div style="margin-bottom:30px;">
+        {% for message in messages %}
+        <div style="padding:16px 24px;border-radius:16px;margin-bottom:10px;font-size:14px;font-weight:600;
+{% if message.tags == 'success' %}background:rgba(46,204,113,0.1);color:#2ecc71;border:1px solid rgba(46,204,113,0.2);
+{% elif message.tags == 'warning' %}background:rgba(241,196,15,0.1);color:#f1c40f;border:1px solid rgba(241,196,15,0.2);
+{% elif message.tags == 'info' %}background:rgba(52,152,219,0.1);color:#3498db;border:1px solid rgba(52,152,219,0.2);
+{% else %}background:rgba(231,76,60,0.1);color:#e74c3c;border:1px solid rgba(231,76,60,0.2);
+{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:30px;">
         {% for animal in animals %}
         <div class="card" style="padding:0;overflow:hidden;display:flex;flex-direction:column;">
@@ -28,9 +44,28 @@
                 </div>
                 {% endif %}
                 <div style="position:absolute;top:15px;right:15px;">
+                    {% if animal.id in user_requests %}
+                    {% with req=user_requests|dictsort:"id" %}
+                    {% endwith %}
+                    <span style="padding:6px 14px;border-radius:100px;font-size:11px;font-weight:800;backdrop-filter:blur(5px);
+{% if user_requests.items|length >= 0 %}
+{% for aid, req in user_requests.items %}
+{% if aid == animal.id %}
+{% if req.status == 'Pending' %}background:rgba(241,196,15,0.15);color:#f1c40f;border:1px solid #f1c40f;">⏳ PENDING
+                        {% elif req.status == 'Approved' %}background:rgba(46,204,113,0.15);color:#2ecc71;border:1px
+                        solid #2ecc71;">✅ APPROVED
+                        {% elif req.status == 'Rejected' %}background:rgba(231,76,60,0.15);color:#e74c3c;border:1px
+                        solid #e74c3c;">❌ REJECTED
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </span>
+                    {% else %}
                     <span
                         style="background:rgba(46,204,113,0.15);color:var(--accent);padding:6px 14px;border-radius:100px;font-size:11px;font-weight:800;border:1px solid var(--accent);backdrop-filter:blur(5px);">MEDICAL
                         CLEARANCE: OK</span>
+                    {% endif %}
                 </div>
             </div>
             <div style="padding:30px;flex:1;display:flex;flex-direction:column;">
@@ -55,9 +90,28 @@
                     <a href="/user_animal_detail/?id=
 {{ animal.id }}
 " class="btn btn-outline" style="flex:1;padding:14px;font-size:13px;">View File</a>
+                    {% if animal.id in user_requests %}
+                    {% for aid, req in user_requests.items %}
+                    {% if aid == animal.id and req.status == 'Pending' %}
+                    <a href="/user_cancel_adoption/?id=
+{{ req.id }}
+" class="btn btn-outline" style="flex:1;padding:14px;font-size:13px;border-color:#e74c3c;color:#e74c3c;"><i
+                            class="fas fa-times"></i> Cancel Request</a>
+                    {% elif aid == animal.id and req.status == 'Approved' %}
+                    <span class="btn btn-primary"
+                        style="flex:1;padding:14px;font-size:13px;background:#2ecc71;border:none;cursor:default;"><i
+                            class="fas fa-check-circle"></i> Approved</span>
+                    {% elif aid == animal.id and req.status == 'Rejected' %}
+                    <span class="btn btn-outline"
+                        style="flex:1;padding:14px;font-size:13px;border-color:#e74c3c;color:#e74c3c;cursor:default;opacity:0.6;"><i
+                            class="fas fa-ban"></i> Rejected</span>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
                     <a href="/user_submit_adoption/?id=
 {{ animal.id }}
 " class="btn btn-primary" style="flex:1;padding:14px;font-size:13px;"><i class="fas fa-heart"></i> Adopt</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

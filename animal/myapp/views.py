@@ -393,7 +393,13 @@ def user_track_rescue(request):
 
 def user_request_adoption(request):
     animals = RescuedAnimal.objects.filter(listed_for_adoption=True)
-    return render(request, 'USER/user_request_adoption.html', {'animals': animals})
+    user_requests = {}
+    if 'profile_id' in request.session:
+        profile = UserProfile.objects.get(id=request.session['profile_id'])
+        reqs = AdoptionRequest.objects.filter(user=profile)
+        for r in reqs:
+            user_requests[r.animal_id] = r
+    return render(request, 'USER/user_request_adoption.html', {'animals': animals, 'user_requests': user_requests})
 
 def user_animal_detail(request):
     aid = request.GET.get('id')
@@ -402,12 +408,17 @@ def user_animal_detail(request):
     meds = animal.medicines.all()
     foods = animal.food_prescriptions.all()
     logs = animal.care_logs.all().order_by('-given_at')
+    user_req = None
+    if 'profile_id' in request.session:
+        profile = UserProfile.objects.get(id=request.session['profile_id'])
+        user_req = AdoptionRequest.objects.filter(user=profile, animal=animal).first()
     return render(request, 'USER/user_animal_detail.html', {
         'animal': animal, 
         'records': records, 
         'meds': meds, 
         'foods': foods, 
-        'logs': logs
+        'logs': logs,
+        'user_req': user_req
     })
 
 def user_submit_adoption(request):
@@ -415,8 +426,25 @@ def user_submit_adoption(request):
         aid = request.GET.get('id')
         profile = UserProfile.objects.get(id=request.session['profile_id'])
         animal = RescuedAnimal.objects.get(id=aid)
-        AdoptionRequest.objects.get_or_create(user=profile, animal=animal)
-        messages.success(request, "Adoption request sent.")
+        existing = AdoptionRequest.objects.filter(user=profile, animal=animal).first()
+        if existing:
+            messages.warning(request, "You have already submitted an adoption request for this animal.")
+        else:
+            AdoptionRequest.objects.create(user=profile, animal=animal)
+            messages.success(request, "Adoption request sent successfully!")
+        return redirect('/user_request_adoption/')
+    return redirect('/login/')
+
+def user_cancel_adoption(request):
+    if 'profile_id' in request.session:
+        rid = request.GET.get('id')
+        profile = UserProfile.objects.get(id=request.session['profile_id'])
+        req = AdoptionRequest.objects.filter(id=rid, user=profile, status='Pending').first()
+        if req:
+            req.delete()
+            messages.info(request, "Adoption request cancelled.")
+        else:
+            messages.error(request, "Request not found or already processed.")
         return redirect('/user_request_adoption/')
     return redirect('/login/')
 

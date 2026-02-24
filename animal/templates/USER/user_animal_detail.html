@@ -21,10 +21,30 @@
         <div style="display:flex;gap:12px;">
             <a href="/user_request_adoption/" class="btn btn-outline" style="padding:14px 28px;"><i
                     class="fas fa-arrow-left"></i> Gallery</a>
+            {% if user_req %}
+            {% if user_req.status == 'Pending' %}
+            <a href="/user_cancel_adoption/?id=
+{{ user_req.id }}
+" class="btn btn-outline" style="padding:14px 28px;border-color:#e74c3c;color:#e74c3c;"><i class="fas fa-times"></i>
+                Cancel Request</a>
+            <span class="btn btn-primary"
+                style="padding:14px 28px;background:rgba(241,196,15,0.15);border:1px solid #f1c40f;color:#f1c40f;cursor:default;"><i
+                    class="fas fa-clock"></i> Pending</span>
+            {% elif user_req.status == 'Approved' %}
+            <span class="btn btn-primary"
+                style="padding:14px 28px;background:#2ecc71;border:none;cursor:default;font-weight:700;"><i
+                    class="fas fa-check-circle"></i> Approved</span>
+            {% elif user_req.status == 'Rejected' %}
+            <span class="btn btn-outline"
+                style="padding:14px 28px;border-color:#e74c3c;color:#e74c3c;cursor:default;opacity:0.6;"><i
+                    class="fas fa-ban"></i> Rejected</span>
+            {% endif %}
+            {% else %}
             <a href="/user_submit_adoption/?id=
 {{ animal.id }}
 " class="btn btn-primary" style="padding:14px 28px;background:var(--accent-green);border:none;font-weight:700;"><i
                     class="fas fa-heart"></i> Request Adoption</a>
+            {% endif %}
         </div>
     </div>
 
