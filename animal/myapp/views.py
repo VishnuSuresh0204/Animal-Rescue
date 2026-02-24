@@ -693,6 +693,24 @@ def care_log_activity(request):
         return render(request, 'CARE/care_log_activity.html', {'animal': animal, 'meds': meds, 'foods': foods, 'logs': logs})
     return redirect('/login/')
 
+def care_update_photo(request):
+    if 'profile_id' in request.session:
+        if request.method == 'POST':
+            aid = request.POST.get('animal_id')
+            animal = RescuedAnimal.objects.get(id=aid)
+            center = CareCenter.objects.get(id=request.session['profile_id'])
+            if animal.care_center == center:
+                if 'photo' in request.FILES:
+                    animal.photo = request.FILES['photo']
+                    animal.save()
+                    messages.success(request, f"Photo updated for {animal.name or animal.species}")
+                else:
+                    messages.error(request, "No photo was selected.")
+            else:
+                messages.error(request, "You do not have permission to update this animal.")
+        return redirect('/care_view_pets/')
+    return redirect('/login/')
+
 def care_list_adoption(request):
     aid = request.GET.get('id')
     animal = RescuedAnimal.objects.filter(id=aid).first()

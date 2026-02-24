@@ -86,6 +86,7 @@ urlpatterns = [
     path('care_view_pets/', views.care_view_pets),
     path('care_log_activity/', views.care_log_activity),
     path('care_list_adoption/', views.care_list_adoption),
+    path('care_update_photo/', views.care_update_photo),
     path('care_manage_adoptions/', views.care_manage_adoptions),
     path('care_approve_adoption/', views.care_approve_adoption),
     path('care_reject_adoption/', views.care_reject_adoption),
