@@ -93,5 +93,6 @@ urlpatterns = [
     path('care_reject_adoption/', views.care_reject_adoption),
     path('care_history/', views.care_adoption_history),
     path('care_chat_vet/', views.care_chat_vet),
+    path('vet_chat_care/', views.vet_chat_care),
     path('care_profile/', views.care_profile),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -771,13 +771,53 @@ def care_adoption_history(request):
 def care_chat_vet(request):
     if 'profile_id' in request.session:
         center = CareCenter.objects.get(id=request.session['profile_id'])
+        v_id = request.GET.get('id')
+        
         if request.method == 'POST':
-            v_id = request.POST.get('vet_id')
+            target_v_id = request.POST.get('vet_id')
             msg = request.POST.get('message')
-            Chat.objects.create(care_center=center, vet_id=v_id, sender_type='care', message=msg)
-            messages.success(request, "Message sent")
+            Chat.objects.create(care_center=center, vet_id=target_v_id, sender_type='care', message=msg)
+            return redirect(f'/care_chat_vet/?id={target_v_id}')
+            
         vets = Veterinarian.objects.filter(status='Approved')
-        return render(request, 'CARE/care_chat_vet.html', {'vets': vets})
+        chats = []
+        selected_vet = None
+        if v_id:
+            selected_vet = Veterinarian.objects.filter(id=v_id).first()
+            if selected_vet:
+                chats = Chat.objects.filter(care_center=center, vet=selected_vet).order_by('sent_at')
+            
+        return render(request, 'CARE/care_chat_vet.html', {
+            'vets': vets, 
+            'chats': chats, 
+            'selected_vet': selected_vet
+        })
+    return redirect('/login/')
+
+def vet_chat_care(request):
+    if 'profile_id' in request.session:
+        vet = Veterinarian.objects.get(id=request.session['profile_id'])
+        c_id = request.GET.get('id')
+        
+        if request.method == 'POST':
+            target_c_id = request.POST.get('care_id')
+            msg = request.POST.get('message')
+            Chat.objects.create(vet=vet, care_center_id=target_c_id, sender_type='vet', message=msg)
+            return redirect(f'/vet_chat_care/?id={target_c_id}')
+            
+        centers = CareCenter.objects.filter(status='Approved')
+        chats = []
+        selected_center = None
+        if c_id:
+            selected_center = CareCenter.objects.filter(id=c_id).first()
+            if selected_center:
+                chats = Chat.objects.filter(vet=vet, care_center=selected_center).order_by('sent_at')
+            
+        return render(request, 'VET/vet_chat_care.html', {
+            'centers': centers, 
+            'chats': chats, 
+            'selected_center': selected_center
+        })
     return redirect('/login/')
 
 def admin_report(request):
