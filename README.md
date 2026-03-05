@@ -5,10 +5,15 @@ A premium, comprehensive web application designed to streamline animal rescue op
 ## 🚀 Key Features
 
 ### 🏛️ Role-Based Access Control
-- **User**: Report rescues, track rescue status, and apply for pet adoption.
+- **User**: Report rescues, track rescue status, apply for pet adoption, and book vet appointments.
 - **Rescue Team**: Receive alerts, respond to incidents, and transport animals to Care Centers.
-- **Veterinarian**: Manage clinical records, prescribe treatments, and verify adoption readiness.
+- **Veterinarian**: Manage clinical records, prescribe treatments, verify adoption readiness, and manage appointment requests.
 - **Care Center**: Manage resident animal logs, listing pets for adoption, and vetting applicant profiles.
+
+### 🗓️ Veterinary Appointments
+- **Online Booking**: Users can book appointments with detailed pet profiles and symptoms.
+- **Vet Dashboard**: Veterinarians can accept/reject requests, assign time slots, and set consultation fees.
+- **Seamless Payments**: Integrated payment workflow upon appointment confirmation.
 
 ### 🏥 Clinical & Management Suite
 - **Recovery Tracking**: Dynamic progress bars and medical condition monitoring.
