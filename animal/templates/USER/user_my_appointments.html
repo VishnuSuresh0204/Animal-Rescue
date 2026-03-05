@@ -1,0 +1,254 @@
+{% extends 'USER/base_user.html' %}
+{% block title %}My Appointments{% endblock %}
+
+{% block body %}
+
+<div class="container animate-fade" style="margin-top:60px;">
+
+```
+<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:40px;">
+    <div>
+        <h1 style="font-size: clamp(26px, 4vw, 40px); font-weight:800; margin-bottom:8px;">
+            <i class="fas fa-calendar-alt" style="color:var(--accent);"></i> My Appointments
+        </h1>
+        <p style="color:var(--text-secondary);">
+            Track your vet appointment requests and booking status.
+        </p>
+    </div>
+
+    <a href="/user_view_vets/" class="btn btn-primary">
+        <i class="fas fa-plus"></i> New Appointment
+    </a>
+</div>
+
+
+{% if messages %}
+    {% for msg in messages %}
+    <div style="
+        padding:14px 20px;
+        border-radius:10px;
+        margin-bottom:20px;
+        background:{% if 'error' in msg.tags %}rgba(231,76,60,0.1){% elif 'success' in msg.tags %}rgba(46,204,113,0.1){% else %}rgba(52,152,219,0.1){% endif %};
+        border-left:4px solid {% if 'error' in msg.tags %}#e74c3c{% elif 'success' in msg.tags %}var(--accent){% else %}#3498db{% endif %};
+        color:{% if 'error' in msg.tags %}#e74c3c{% elif 'success' in msg.tags %}var(--accent){% else %}#3498db{% endif %};">
+
+        {{ msg }}
+
+    </div>
+    {% endfor %}
+{% endif %}
+
+
+
+{% if appointments %}
+
+<div style="display:flex; flex-direction:column; gap:24px;">
+
+    {% for appt in appointments %}
+
+    <div class="card" style="position:relative; overflow:hidden;">
+
+        <!-- Status Badge -->
+        <div style="position:absolute; top:20px; right:20px;">
+
+            {% if appt.status == 'Pending' %}
+            <span style="padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(241,196,15,0.15);color:#f1c40f;">
+                ⏳ PENDING
+            </span>
+
+            {% elif appt.status == 'Accepted' %}
+            <span style="padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(46,204,113,0.15);color:var(--accent);">
+                ✅ ACCEPTED
+            </span>
+
+            {% elif appt.status == 'Rejected' %}
+            <span style="padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(231,76,60,0.15);color:#e74c3c;">
+                ❌ REJECTED
+            </span>
+
+            {% elif appt.status == 'PaymentDone' %}
+            <span style="padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(155,89,182,0.15);color:#9b59b6;">
+                💳 CONFIRMED
+            </span>
+
+            {% elif appt.status == 'Completed' %}
+            <span style="padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(52,152,219,0.15);color:#3498db;">
+                🏁 COMPLETED
+            </span>
+            {% endif %}
+
+        </div>
+
+
+        <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap;">
+
+            <!-- Pet Photo -->
+            <div style="flex-shrink:0;">
+
+                {% if appt.pet_photo %}
+                <img src="{{ appt.pet_photo.url }}"
+                     alt="{{ appt.pet_name }}"
+                     style="width:90px;height:90px;border-radius:12px;object-fit:cover;border:2px solid rgba(255,255,255,0.1);">
+
+                {% else %}
+                <div style="width:90px;height:90px;border-radius:12px;background:rgba(46,204,113,0.08);display:flex;align-items:center;justify-content:center;font-size:36px;">
+                    🐾
+                </div>
+                {% endif %}
+
+            </div>
+
+
+            <!-- Appointment Details -->
+            <div style="flex:1; min-width:200px; padding-right:120px;">
+
+                <h3 style="margin:0 0 4px; font-size:20px; font-weight:700;">
+                    {{ appt.pet_name }}
+                </h3>
+
+                <p style="margin:0 0 12px; color:var(--text-secondary); font-size:14px;">
+                    {{ appt.pet_species }}
+                    {% if appt.pet_breed %} • {{ appt.pet_breed }}{% endif %}
+                    • {{ appt.pet_age }}
+                    • {{ appt.pet_gender }}
+                </p>
+
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-bottom:14px;">
+
+                    <div style="font-size:13px; color:var(--text-secondary);">
+                        <i class="fas fa-user-md" style="color:var(--accent); width:14px;"></i>
+                        <strong>Vet:</strong>
+                        Dr. {{ appt.vet.name|default:"Not Assigned" }}
+                    </div>
+
+
+                    <div style="font-size:13px; color:var(--text-secondary);">
+                        <i class="fas fa-clock" style="color:var(--accent); width:14px;"></i>
+                        <strong>Requested:</strong>
+                        {{ appt.requested_at|date:"M d, Y" }}
+                    </div>
+
+
+                    {% if appt.appointment_date %}
+                    <div style="font-size:13px; color:var(--accent); font-weight:600;">
+                        <i class="fas fa-calendar-check"></i>
+                        <strong>Appointment Date:</strong>
+                        {{ appt.appointment_date|date:"M d, Y" }}
+                    </div>
+
+                    <div style="font-size:13px; color:var(--accent); font-weight:600;">
+                        <i class="fas fa-clock"></i>
+                        <strong>Time:</strong>
+                        {{ appt.appointment_time }}
+                    </div>
+                    {% endif %}
+
+
+                    {% if appt.consultation_fee %}
+                    <div style="font-size:13px; color:#f1c40f; font-weight:600;">
+                        <i class="fas fa-rupee-sign"></i>
+                        <strong>Fee:</strong>
+                        ₹{{ appt.consultation_fee|default:"0" }}
+                    </div>
+                    {% endif %}
+
+
+                    {% if appt.payment_reference %}
+                    <div style="font-size:13px; color:#9b59b6; font-weight:600;">
+                        <i class="fas fa-receipt"></i>
+                        <strong>Ref:</strong>
+                        {{ appt.payment_reference }}
+                    </div>
+                    {% endif %}
+
+                </div>
+
+
+
+                {% if appt.reason %}
+                <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:13px;color:var(--text-secondary);">
+                    <strong>Reason:</strong> {{ appt.reason }}
+                </div>
+                {% endif %}
+
+
+
+                {% if appt.vet_notes %}
+                <div style="background:rgba(46,204,113,0.05);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:13px;color:var(--text-secondary);border-left:3px solid var(--accent);">
+                    <strong style="color:var(--accent);">Vet Notes:</strong> {{ appt.vet_notes }}
+                </div>
+                {% endif %}
+
+
+
+                {% if appt.rejection_reason %}
+                <div style="background:rgba(231,76,60,0.06);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:13px;color:#e74c3c;border-left:3px solid #e74c3c;">
+                    <strong>Rejection Reason:</strong> {{ appt.rejection_reason }}
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+
+
+        <!-- Payment Section -->
+        {% if appt.status == 'Accepted' %}
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);">
+
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+
+                <p style="margin:0;color:var(--text-secondary);font-size:14px;">
+                    <i class="fas fa-info-circle" style="color:#f1c40f;"></i>
+                    Your appointment is confirmed. Complete payment to secure the booking.
+                </p>
+
+                <a href="/user_appointment_payment/?id={{ appt.id }}"
+                   class="btn btn-primary"
+                   style="padding:12px 28px;">
+
+                    <i class="fas fa-credit-card"></i>
+                    Pay Now — ₹{{ appt.consultation_fee|default:"0" }}
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+
+
+{% else %}
+
+<div class="card" style="text-align:center; padding:60px 20px;">
+
+    <div style="font-size:60px; margin-bottom:20px;">📅</div>
+
+    <h3>No Appointments Yet</h3>
+
+    <p style="color:var(--text-secondary); margin-bottom:24px;">
+        You haven't booked any vet appointments yet.
+    </p>
+
+    <a href="/user_view_vets/" class="btn btn-primary">
+        <i class="fas fa-calendar-plus"></i>
+        Book Your First Appointment
+    </a>
+
+</div>
+
+{% endif %}
+```
+
+</div>
+{% endblock %}

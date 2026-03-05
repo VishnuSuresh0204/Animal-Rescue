@@ -1,0 +1,231 @@
+{% extends 'USER/base_user.html' %}
+{% block title %}Book Appointment - Dr. {{ vet.name }}{% endblock %}
+
+{% block body %}
+<div class="container animate-fade" style="margin-top: 60px; max-width: 780px;">
+
+    <!-- Vet Info Banner -->
+    <div class="card"
+        style="display:flex; align-items:center; gap:20px; margin-bottom:32px; padding:24px; background: linear-gradient(135deg, rgba(46,204,113,0.08), rgba(46,204,113,0.02));">
+        {% if vet.image %}
+        <img src="{{ vet.image.url }}" alt="{{ vet.name }}"
+            style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid var(--accent);">
+        {% else %}
+        <div
+            style="width:80px; height:80px; border-radius:50%; background:rgba(46,204,113,0.1); display:flex; align-items:center; justify-content:center; font-size:32px; flex-shrink:0;">
+            🩺</div>
+        {% endif %}
+        <div>
+            <p style="color:var(--text-secondary); font-size:13px; margin:0 0 4px;">Booking appointment with</p>
+            <h2 style="margin:0; font-size:22px; font-weight:700;">Dr. {{ vet.name }}</h2>
+            <p style="margin:4px 0 0; color:var(--text-secondary); font-size:14px;">
+                {{ vet.qualification }} &bull; {{ vet.experience }} experience
+            </p>
+        </div>
+    </div>
+
+    <h2 style="font-size:24px; font-weight:700; margin-bottom:24px;">
+        <i class="fas fa-paw" style="color:var(--accent);"></i> Pet & Appointment Details
+    </h2>
+
+    {% if messages %}
+    {% for msg in messages %}
+    <div style="padding:14px 20px; border-radius:10px; margin-bottom:20px;
+                background:rgba(231,76,60,0.1); border-left:4px solid #e74c3c; color:#e74c3c;">
+        <i class="fas fa-exclamation-circle"></i> {{ msg }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" action="/user_book_appointment/?vet_id={{ vet.id }}" novalidate
+        id="apptForm">
+        {% csrf_token %}
+        <input type="hidden" name="vet_id" value="{{ vet.id }}">
+
+        <!-- Section: Pet Info -->
+        <div class="card" style="margin-bottom:24px;">
+            <h3
+                style="font-size:16px; font-weight:700; color:var(--accent); margin-bottom:20px; text-transform:uppercase; letter-spacing:1px;">
+                <i class="fas fa-dog"></i> Pet Information
+            </h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:18px;">
+                <div>
+                    <label
+                        style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">
+                        Pet Name <span style="color:#e74c3c;">*</span>
+                    </label>
+                    <input type="text" name="pet_name" id="pet_name" required minlength="2" maxlength="100"
+                        placeholder="e.g. Buddy" pattern="[A-Za-z\s\-]+"
+                        title="Pet name should contain only letters and spaces"
+                        style="width:100%; padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:inherit; font-size:15px; box-sizing:border-box;">
+                    <span class="err-msg" id="err_pet_name" style="color:#e74c3c; font-size:12px; display:none;">Please
+                        enter a valid pet name (letters only).</span>
+                </div>
+
+                <div>
+                    <label
+                        style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">
+                        Species <span style="color:#e74c3c;">*</span>
+                    </label>
+                    <select name="pet_species" id="pet_species" required
+                        style="width:100%; padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(30,30,30,0.9); color:inherit; font-size:15px; box-sizing:border-box;">
+                        <option value="">-- Select Species --</option>
+                        <option value="Dog">Dog</option>
+                        <option value="Cat">Cat</option>
+                        <option value="Bird">Bird</option>
+                        <option value="Rabbit">Rabbit</option>
+                        <option value="Fish">Fish</option>
+                        <option value="Hamster">Hamster</option>
+                        <option value="Reptile">Reptile</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <span class="err-msg" id="err_pet_species"
+                        style="color:#e74c3c; font-size:12px; display:none;">Please select a species.</span>
+                </div>
+
+                <div>
+                    <label
+                        style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Breed
+                        (Optional)</label>
+                    <input type="text" name="pet_breed" maxlength="100" placeholder="e.g. Golden Retriever"
+                        style="width:100%; padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:inherit; font-size:15px; box-sizing:border-box;">
+                </div>
+
+                <div>
+                    <label
+                        style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">
+                        Age <span style="color:#e74c3c;">*</span>
+                    </label>
+                    <input type="text" name="pet_age" id="pet_age" required placeholder="e.g. 2 years"
+                        pattern="[0-9A-Za-z\s\-]+" title="Enter age like '2 years' or '6 months'"
+                        style="width:100%; padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:inherit; font-size:15px; box-sizing:border-box;">
+                    <span class="err-msg" id="err_pet_age" style="color:#e74c3c; font-size:12px; display:none;">Please
+                        enter age (e.g. 2 years).</span>
+                </div>
+
+                <div>
+                    <label
+                        style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">
+                        Gender <span style="color:#e74c3c;">*</span>
+                    </label>
+                    <select name="pet_gender" id="pet_gender" required
+                        style="width:100%; padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(30,30,30,0.9); color:inherit; font-size:15px; box-sizing:border-box;">
+                        <option value="">-- Select Gender --</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Unknown">Unknown</option>
+                    </select>
+                    <span class="err-msg" id="err_pet_gender"
+                        style="color:#e74c3c; font-size:12px; display:none;">Please select gender.</span>
+                </div>
+
+                <div>
+                    <label
+                        style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Weight
+                        (Optional)</label>
+                    <input type="text" name="pet_weight" maxlength="20" placeholder="e.g. 15 kg"
+                        style="width:100%; padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:inherit; font-size:15px; box-sizing:border-box;">
+                </div>
+            </div>
+
+            <div style="margin-top:18px;">
+                <label
+                    style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Pet
+                    Photo (Optional)</label>
+                <input type="file" name="pet_photo" accept="image/*"
+                    style="width:100%; padding:10px; border-radius:10px; border:1px dashed rgba(255,255,255,0.2); background:rgba(255,255,255,0.02); color:inherit; font-size:14px; box-sizing:border-box;">
+            </div>
+        </div>
+
+        <!-- Section: Symptoms & Reason -->
+        <div class="card" style="margin-bottom:24px;">
+            <h3
+                style="font-size:16px; font-weight:700; color:var(--accent); margin-bottom:20px; text-transform:uppercase; letter-spacing:1px;">
+                <i class="fas fa-notes-medical"></i> Medical Details
+            </h3>
+            <div style="display:flex; flex-direction:column; gap:18px;">
+                <div>
+                    <label
+                        style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">
+                        Symptoms / Problems Observed <span style="color:#e74c3c;">*</span>
+                    </label>
+                    <textarea name="pet_symptoms" id="pet_symptoms" required minlength="10" maxlength="1000"
+                        placeholder="Describe symptoms your pet is showing (e.g. limping, loss of appetite, vomiting)..."
+                        style="width:100%; padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:inherit; font-size:15px; box-sizing:border-box; resize:vertical;"
+                        rows="4"></textarea>
+                    <span class="err-msg" id="err_pet_symptoms"
+                        style="color:#e74c3c; font-size:12px; display:none;">Please describe the symptoms (at least 10
+                        characters).</span>
+                </div>
+                <div>
+                    <label
+                        style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">
+                        Reason for Appointment <span style="color:#e74c3c;">*</span>
+                    </label>
+                    <textarea name="reason" id="reason" required minlength="10" maxlength="1000"
+                        placeholder="What is the primary reason for this visit? (e.g. routine checkup, treatment, vaccination)..."
+                        style="width:100%; padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:inherit; font-size:15px; box-sizing:border-box; resize:vertical;"
+                        rows="4"></textarea>
+                    <span class="err-msg" id="err_reason" style="color:#e74c3c; font-size:12px; display:none;">Please
+                        state the reason (at least 10 characters).</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:16px; justify-content:flex-end;">
+            <a href="/user_view_vets/" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+            <button type="submit" class="btn btn-primary" style="padding:14px 36px; font-size:16px;">
+                <i class="fas fa-calendar-check"></i> Submit Appointment Request
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('apptForm').addEventListener('submit', function (e) {
+        let valid = true;
+
+        function validate(fieldId, errId, condition) {
+            const errEl = document.getElementById(errId);
+            if (condition) {
+                errEl.style.display = 'block';
+                document.getElementById(fieldId).style.border = '1px solid #e74c3c';
+                valid = false;
+            } else {
+                errEl.style.display = 'none';
+                document.getElementById(fieldId).style.border = '1px solid rgba(255,255,255,0.1)';
+            }
+        }
+
+        const petName = document.getElementById('pet_name').value.trim();
+        validate('pet_name', 'err_pet_name', petName.length < 2 || !/^[A-Za-z\s\-]+$/.test(petName));
+
+        const species = document.getElementById('pet_species').value;
+        validate('pet_species', 'err_pet_species', !species);
+
+        const age = document.getElementById('pet_age').value.trim();
+        validate('pet_age', 'err_pet_age', !age);
+
+        const gender = document.getElementById('pet_gender').value;
+        validate('pet_gender', 'err_pet_gender', !gender);
+
+        const symptoms = document.getElementById('pet_symptoms').value.trim();
+        validate('pet_symptoms', 'err_pet_symptoms', symptoms.length < 10);
+
+        const reason = document.getElementById('reason').value.trim();
+        validate('reason', 'err_reason', reason.length < 10);
+
+        if (!valid) e.preventDefault();
+    });
+
+    // Real-time validation
+    ['pet_name', 'pet_age', 'pet_symptoms', 'reason'].forEach(id => {
+        document.getElementById(id).addEventListener('input', function () {
+            this.style.border = '1px solid rgba(255,255,255,0.1)';
+            document.getElementById('err_' + id).style.display = 'none';
+        });
+    });
+</script>
+{% endblock %}

@@ -897,3 +897,184 @@ def care_profile(request):
         return render(request, 'CARE/care_profile.html', {'profile': profile})
     return redirect('/login/')
 
+
+# --- Appointment Views ---
+
+def user_view_vets(request):
+    """User browses approved vets to book an appointment."""
+    if 'profile_id' not in request.session:
+        return redirect('/login/')
+    vets = Veterinarian.objects.filter(status='Approved')
+    return render(request, 'USER/user_view_vets.html', {'vets': vets})
+
+
+def user_book_appointment(request):
+    """User fills in pet details and books an appointment with a chosen vet."""
+    if 'profile_id' not in request.session:
+        return redirect('/login/')
+
+    vid = request.GET.get('vet_id') or request.POST.get('vet_id')
+    vet = Veterinarian.objects.filter(id=vid, status='Approved').first()
+    if not vet:
+        messages.error(request, "Veterinarian not found.")
+        return redirect('/user_view_vets/')
+
+    if request.method == 'POST':
+        profile = UserProfile.objects.get(id=request.session['profile_id'])
+        pet_name    = request.POST.get('pet_name', '').strip()
+        pet_species = request.POST.get('pet_species', '').strip()
+        pet_breed   = request.POST.get('pet_breed', '').strip()
+        pet_age     = request.POST.get('pet_age', '').strip()
+        pet_gender  = request.POST.get('pet_gender', '').strip()
+        pet_weight  = request.POST.get('pet_weight', '').strip()
+        pet_symptoms = request.POST.get('pet_symptoms', '').strip()
+        reason      = request.POST.get('reason', '').strip()
+        pet_photo   = request.FILES.get('pet_photo')
+
+        if not all([pet_name, pet_species, pet_age, pet_gender, pet_symptoms, reason]):
+            messages.error(request, "Please fill in all required fields.")
+            return render(request, 'USER/user_book_appointment.html', {'vet': vet})
+
+        VetAppointment.objects.create(
+            user=profile,
+            vet=vet,
+            pet_name=pet_name,
+            pet_species=pet_species,
+            pet_breed=pet_breed,
+            pet_age=pet_age,
+            pet_gender=pet_gender,
+            pet_weight=pet_weight,
+            pet_symptoms=pet_symptoms,
+            reason=reason,
+            pet_photo=pet_photo,
+        )
+        messages.success(request, "Appointment request sent! Wait for the vet to confirm a date & time.")
+        return redirect('/user_my_appointments/')
+
+    return render(request, 'USER/user_book_appointment.html', {'vet': vet})
+
+
+def user_my_appointments(request):
+    """User views all their appointment requests and statuses."""
+    if 'profile_id' not in request.session:
+        return redirect('/login/')
+    profile = UserProfile.objects.get(id=request.session['profile_id'])
+    appointments = VetAppointment.objects.filter(user=profile).order_by('-requested_at')
+    return render(request, 'USER/user_my_appointments.html', {'appointments': appointments})
+
+
+def user_appointment_payment(request):
+    """User makes payment for an accepted appointment."""
+    if 'profile_id' not in request.session:
+        return redirect('/login/')
+    appt_id = request.GET.get('id')
+    profile = UserProfile.objects.get(id=request.session['profile_id'])
+    appt = VetAppointment.objects.filter(id=appt_id, user=profile, status='Accepted').first()
+    if not appt:
+        messages.error(request, "Appointment not found or not eligible for payment.")
+        return redirect('/user_my_appointments/')
+
+    if request.method == 'POST':
+        card_name   = request.POST.get('card_name', '').strip()
+        card_number = request.POST.get('card_number', '').strip()
+        expiry      = request.POST.get('expiry', '').strip()
+        cvv         = request.POST.get('cvv', '').strip()
+
+        if not all([card_name, card_number, expiry, cvv]):
+            messages.error(request, "Please fill in all payment details.")
+            return render(request, 'USER/user_appointment_payment.html', {'appt': appt})
+
+        # Simulate payment — generate a reference
+        import uuid
+        appt.payment_done = True
+        appt.status = 'PaymentDone'
+        appt.payment_reference = str(uuid.uuid4()).upper()[:12]
+        appt.save()
+        messages.success(request, f"Payment successful! Booking confirmed. Reference: {appt.payment_reference}")
+        return redirect('/user_my_appointments/')
+
+    return render(request, 'USER/user_appointment_payment.html', {'appt': appt})
+
+
+# --- Vet appointment views ---
+
+def vet_appointment_requests(request):
+    """Vet views all appointment requests made to them."""
+    if 'profile_id' not in request.session:
+        return redirect('/login/')
+    vet = Veterinarian.objects.get(id=request.session['profile_id'])
+    appointments = VetAppointment.objects.filter(vet=vet).order_by('-requested_at')
+    return render(request, 'VET/vet_appointment_requests.html', {'appointments': appointments})
+
+
+def vet_accept_appointment(request):
+    """Vet accepts an appointment and sets date, time, and fee."""
+    if 'profile_id' not in request.session:
+        return redirect('/login/')
+    vet = Veterinarian.objects.get(id=request.session['profile_id'])
+    appt_id = request.GET.get('id')
+    appt = VetAppointment.objects.filter(id=appt_id, vet=vet, status='Pending').first()
+    if not appt:
+        messages.error(request, "Appointment not found.")
+        return redirect('/vet_appointment_requests/')
+
+    if request.method == 'POST':
+        from datetime import date as dt_date, datetime
+        appt_date_str = request.POST.get('appointment_date', '').strip()
+        appt_time_str = request.POST.get('appointment_time', '').strip()
+        fee_str       = request.POST.get('consultation_fee', '').strip()
+        vet_notes     = request.POST.get('vet_notes', '').strip()
+
+        if not appt_date_str or not appt_time_str or not fee_str:
+            messages.error(request, "Please fill in date, time, and consultation fee.")
+            return render(request, 'VET/vet_accept_appointment.html', {'appt': appt})
+
+        try:
+            appt_date = datetime.strptime(appt_date_str, '%Y-%m-%d').date()
+            if appt_date < dt_date.today():
+                messages.error(request, "Appointment date cannot be in the past.")
+                return render(request, 'VET/vet_accept_appointment.html', {'appt': appt})
+        except ValueError:
+            messages.error(request, "Invalid date format.")
+            return render(request, 'VET/vet_accept_appointment.html', {'appt': appt})
+
+        try:
+            fee = float(fee_str)
+            if fee <= 0:
+                raise ValueError
+        except ValueError:
+            messages.error(request, "Please enter a valid consultation fee.")
+            return render(request, 'VET/vet_accept_appointment.html', {'appt': appt})
+
+        appt.appointment_date = appt_date
+        appt.appointment_time = appt_time_str
+        appt.consultation_fee = fee
+        appt.vet_notes = vet_notes
+        appt.status = 'Accepted'
+        appt.save()
+        messages.success(request, f"Appointment accepted for {appt.pet_name} on {appt_date}.")
+        return redirect('/vet_appointment_requests/')
+
+    return render(request, 'VET/vet_accept_appointment.html', {'appt': appt})
+
+
+def vet_reject_appointment(request):
+    """Vet rejects an appointment request."""
+    if 'profile_id' not in request.session:
+        return redirect('/login/')
+    vet = Veterinarian.objects.get(id=request.session['profile_id'])
+    appt_id = request.GET.get('id')
+    appt = VetAppointment.objects.filter(id=appt_id, vet=vet, status='Pending').first()
+    if not appt:
+        messages.error(request, "Appointment not found.")
+        return redirect('/vet_appointment_requests/')
+
+    if request.method == 'POST':
+        reason = request.POST.get('rejection_reason', '').strip()
+        appt.rejection_reason = reason
+        appt.status = 'Rejected'
+        appt.save()
+        messages.info(request, "Appointment request rejected.")
+        return redirect('/vet_appointment_requests/')
+
+    return render(request, 'VET/vet_reject_appointment.html', {'appt': appt})

@@ -214,3 +214,55 @@ class Chat(models.Model):
 
     def __str__(self):
         return f"Chat: {self.sender_type} - {self.sent_at}"
+
+
+# Vet Appointment
+class VetAppointment(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected'),
+        ('PaymentDone', 'Payment Done'),
+        ('Completed', 'Completed'),
+    ]
+    SPECIES_CHOICES = [
+        ('Dog', 'Dog'),
+        ('Cat', 'Cat'),
+        ('Bird', 'Bird'),
+        ('Rabbit', 'Rabbit'),
+        ('Fish', 'Fish'),
+        ('Hamster', 'Hamster'),
+        ('Reptile', 'Reptile'),
+        ('Other', 'Other'),
+    ]
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='appointments')
+    vet = models.ForeignKey(Veterinarian, on_delete=models.CASCADE, related_name='appointments')
+
+    # Pet Details
+    pet_name = models.CharField(max_length=100)
+    pet_species = models.CharField(max_length=50, choices=SPECIES_CHOICES)
+    pet_breed = models.CharField(max_length=100, null=True, blank=True)
+    pet_age = models.CharField(max_length=30)
+    pet_gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female'), ('Unknown', 'Unknown')])
+    pet_weight = models.CharField(max_length=20, null=True, blank=True)
+    pet_symptoms = models.TextField()
+    pet_photo = models.ImageField(upload_to='appointment_pets/', null=True, blank=True)
+
+    # Appointment tracking
+    reason = models.TextField()
+    requested_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    rejection_reason = models.TextField(null=True, blank=True)
+
+    # Vet sets these on accept
+    appointment_date = models.DateField(null=True, blank=True)
+    appointment_time = models.TimeField(null=True, blank=True)
+    consultation_fee = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    vet_notes = models.TextField(null=True, blank=True)
+
+    # Payment
+    payment_done = models.BooleanField(default=False)
+    payment_reference = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return f"Appointment: {self.pet_name} ({self.user.name}) with {self.vet.name} - {self.status}"

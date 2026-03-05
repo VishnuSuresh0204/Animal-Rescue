@@ -1,0 +1,184 @@
+{% extends 'USER/base_user.html' %}
+{% block title %}Make Payment - {{ appt.pet_name }}{% endblock %}
+
+{% block body %}
+
+<div class="container animate-fade" style="margin-top: 60px; max-width: 600px;">
+
+```
+<!-- Appointment Summary -->
+<div class="card"
+    style="margin-bottom:28px; background: linear-gradient(135deg, rgba(155,89,182,0.08), rgba(155,89,182,0.02));">
+
+    <h2 style="font-size:20px; font-weight:700; margin-bottom:18px;">
+        <i class="fas fa-calendar-check" style="color:var(--accent);"></i> Appointment Details
+    </h2>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        
+        <div>
+            <p style="margin:0; font-size:12px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;">
+                Pet
+            </p>
+            <p style="margin:4px 0 0; font-weight:600;">
+                {{ appt.pet_name }} ({{ appt.pet_species }})
+            </p>
+        </div>
+
+        <div>
+            <p style="margin:0; font-size:12px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;">
+                Veterinarian
+            </p>
+            <p style="margin:4px 0 0; font-weight:600;">
+                Dr. {{ appt.vet|default:"Not Assigned" }}
+            </p>
+        </div>
+
+        <div>
+            <p style="margin:0; font-size:12px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;">
+                Date
+            </p>
+            <p style="margin:4px 0 0; font-weight:600; color:var(--accent);">
+                {{ appt.appointment_date|date:"D, M d Y" }}
+            </p>
+        </div>
+
+        <div>
+            <p style="margin:0; font-size:12px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;">
+                Time
+            </p>
+            <p style="margin:4px 0 0; font-weight:600; color:var(--accent);">
+                {{ appt.appointment_time }}
+            </p>
+        </div>
+
+    </div>
+
+    <div style="margin-top:18px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:15px; color:var(--text-secondary);">Total Amount Due</span>
+        <span style="font-size:28px; font-weight:800; color:#f1c40f;">
+            ₹{{ appt.consultation_fee|default:"0" }}
+        </span>
+    </div>
+
+</div>
+
+<!-- Payment Form -->
+<div class="card">
+
+    <h2 style="font-size:20px; font-weight:700; margin-bottom:24px;">
+        <i class="fas fa-credit-card" style="color:var(--accent);"></i> Payment Details
+    </h2>
+
+    {% if messages %}
+    {% for msg in messages %}
+    <div style="padding:12px 18px; border-radius:10px; margin-bottom:18px;
+                background:rgba(231,76,60,0.1); border-left:4px solid #e74c3c; color:#e74c3c;">
+        <i class="fas fa-exclamation-circle"></i> {{ msg }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <form method="POST" action="/user_appointment_payment/?id={{ appt.id }}" id="paymentForm" novalidate>
+        {% csrf_token %}
+
+        <!-- Cardholder Name -->
+        <div style="margin-bottom:18px;">
+            <label style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">
+                Cardholder Name <span style="color:#e74c3c;">*</span>
+            </label>
+
+            <input type="text" name="card_name" id="card_name" required placeholder="Name as on card"
+                maxlength="100" pattern="[A-Za-z\s]+"
+                style="width:100%; padding:14px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:inherit; font-size:15px; box-sizing:border-box;">
+
+            <span id="err_card_name" style="color:#e74c3c; font-size:12px; display:none;">
+                Please enter the cardholder name.
+            </span>
+        </div>
+
+        <!-- Card Number -->
+        <div style="margin-bottom:18px;">
+            <label style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">
+                Card Number <span style="color:#e74c3c;">*</span>
+            </label>
+
+            <input type="text" name="card_number" id="card_number" required placeholder="1234 5678 9012 3456"
+                maxlength="19"
+                style="width:100%; padding:14px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:inherit; font-size:15px; box-sizing:border-box; letter-spacing:2px;">
+
+            <span id="err_card_number" style="color:#e74c3c; font-size:12px; display:none;">
+                Please enter a valid 16-digit card number.
+            </span>
+        </div>
+
+        <!-- Expiry + CVV -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:18px;">
+
+            <div>
+                <label style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">
+                    Expiry Date <span style="color:#e74c3c;">*</span>
+                </label>
+
+                <input type="text" name="expiry" id="expiry" required placeholder="MM/YY" maxlength="5"
+                    style="width:100%; padding:14px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:inherit; font-size:15px; box-sizing:border-box;">
+
+                <span id="err_expiry" style="color:#e74c3c; font-size:12px; display:none;">
+                    Enter valid expiry (MM/YY).
+                </span>
+            </div>
+
+            <div>
+                <label style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">
+                    CVV <span style="color:#e74c3c;">*</span>
+                </label>
+
+                <input type="password" name="cvv" id="cvv" required placeholder="•••" maxlength="4"
+                    style="width:100%; padding:14px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:inherit; font-size:15px; box-sizing:border-box;">
+
+                <span id="err_cvv" style="color:#e74c3c; font-size:12px; display:none;">
+                    Enter valid 3 or 4-digit CVV.
+                </span>
+            </div>
+
+        </div>
+
+        <!-- Security Message -->
+        <div style="background:rgba(46,204,113,0.05); border-radius:10px; padding:14px 18px; margin-bottom:22px; border:1px solid rgba(46,204,113,0.1);">
+            <p style="margin:0; font-size:13px; color:var(--text-secondary);">
+                <i class="fas fa-shield-alt" style="color:var(--accent);"></i>
+                Your payment information is secure and encrypted. This is a simulated payment for demonstration purposes.
+            </p>
+        </div>
+
+        <!-- Buttons -->
+        <div style="display:flex; gap:14px; justify-content:flex-end;">
+            <a href="/user_my_appointments/" class="btn btn-outline">Cancel</a>
+
+            <button type="submit" class="btn btn-primary"
+                style="padding:14px 36px; font-size:16px; background:linear-gradient(135deg,#9b59b6,#8e44ad);">
+                <i class="fas fa-lock"></i> Pay ₹{{ appt.consultation_fee|default:"0" }}
+            </button>
+        </div>
+
+    </form>
+</div>
+```
+
+</div>
+
+<script>
+document.getElementById('card_number').addEventListener('input', function () {
+    let val = this.value.replace(/\D/g, '').substring(0, 16);
+    this.value = val.replace(/(.{4})/g, '$1 ').trim();
+});
+
+document.getElementById('expiry').addEventListener('input', function () {
+    let val = this.value.replace(/\D/g, '');
+    if (val.length >= 3) val = val.substring(0, 2) + '/' + val.substring(2, 4);
+    else if (val.length === 2) val = val + '/';
+    this.value = val;
+});
+</script>
+
+{% endblock %}

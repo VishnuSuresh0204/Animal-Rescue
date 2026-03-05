@@ -95,4 +95,13 @@ urlpatterns = [
     path('care_chat_vet/', views.care_chat_vet),
     path('vet_chat_care/', views.vet_chat_care),
     path('care_profile/', views.care_profile),
+
+    # Appointment URLs
+    path('user_view_vets/', views.user_view_vets),
+    path('user_book_appointment/', views.user_book_appointment),
+    path('user_my_appointments/', views.user_my_appointments),
+    path('user_appointment_payment/', views.user_appointment_payment),
+    path('vet_appointment_requests/', views.vet_appointment_requests),
+    path('vet_accept_appointment/', views.vet_accept_appointment),
+    path('vet_reject_appointment/', views.vet_reject_appointment),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

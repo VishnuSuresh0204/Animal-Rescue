@@ -1,0 +1,89 @@
+{% extends 'VET/base_vet.html' %}
+{% block title %}Reject Appointment{% endblock %}
+
+{% block body %}
+<div class="container animate-fade" style="margin-top: 60px; max-width: 580px;">
+    <div class="card" style="border-top: 4px solid #e74c3c;">
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:24px;">
+            <div
+                style="width:48px; height:48px; border-radius:12px; background:rgba(231,76,60,0.1); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0;">
+                ❌</div>
+            <div>
+                <h2 style="margin:0; font-size:22px; font-weight:700;">Reject Appointment</h2>
+                <p style="margin:4px 0 0; color:var(--text-secondary); font-size:14px;">
+                    Request from {{ appt.user.name }} for pet <strong>{{ appt.pet_name }}</strong>
+                </p>
+            </div>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:16px 18px; margin-bottom:24px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                    <p style="margin:0; font-size:12px; color:var(--text-secondary);">Pet</p>
+                    <p style="margin:4px 0 0; font-size:14px; font-weight:600;">{{ appt.pet_name }} ({{ appt.pet_species
+                        }})</p>
+                </div>
+                <div>
+                    <p style="margin:0; font-size:12px; color:var(--text-secondary);">Owner</p>
+                    <p style="margin:4px 0 0; font-size:14px; font-weight:600;">{{ appt.user.name }}</p>
+                </div>
+            </div>
+            <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.06);">
+                <p style="margin:0; font-size:13px; color:var(--text-secondary);"><strong>Reason for visit:</strong> {{
+                    appt.reason }}</p>
+            </div>
+        </div>
+
+        {% if messages %}
+        {% for msg in messages %}
+        <div style="padding:12px 18px; border-radius:10px; margin-bottom:18px;
+                    background:rgba(231,76,60,0.1); border-left:4px solid #e74c3c; color:#e74c3c;">
+            <i class="fas fa-exclamation-circle"></i> {{ msg }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="/vet_reject_appointment/?id={{ appt.id }}" id="rejectForm" novalidate>
+            {% csrf_token %}
+            <div style="margin-bottom:22px;">
+                <label
+                    style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:8px;">
+                    Reason for Rejection <span style="color:#e74c3c;">*</span>
+                </label>
+                <textarea name="rejection_reason" id="rejection_reason" required minlength="10" maxlength="500"
+                    placeholder="Explain why you are unable to accept this appointment (e.g. fully booked, outside specialty, etc.)..."
+                    style="width:100%; padding:13px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:inherit; font-size:15px; box-sizing:border-box; resize:vertical;"
+                    rows="4"></textarea>
+                <span id="err_reason" style="color:#e74c3c; font-size:12px; display:none;">Please provide a reason for
+                    rejection (at least 10 characters).</span>
+            </div>
+            <div style="display:flex; gap:14px; justify-content:flex-end;">
+                <a href="/vet_appointment_requests/" class="btn btn-outline">Cancel</a>
+                <button type="submit" class="btn btn-primary"
+                    style="padding:13px 30px; background:linear-gradient(135deg,#e74c3c,#c0392b);">
+                    <i class="fas fa-times-circle"></i> Confirm Rejection
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('rejectForm').addEventListener('submit', function (e) {
+        const reason = document.getElementById('rejection_reason').value.trim();
+        const errEl = document.getElementById('err_reason');
+        if (reason.length < 10) {
+            errEl.style.display = 'block';
+            document.getElementById('rejection_reason').style.border = '1px solid #e74c3c';
+            e.preventDefault();
+        } else {
+            errEl.style.display = 'none';
+            document.getElementById('rejection_reason').style.border = '1px solid rgba(255,255,255,0.1)';
+        }
+    });
+    document.getElementById('rejection_reason').addEventListener('input', function () {
+        this.style.border = '1px solid rgba(255,255,255,0.1)';
+        document.getElementById('err_reason').style.display = 'none';
+    });
+</script>
+{% endblock %}
